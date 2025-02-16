@@ -2,11 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\TugasResource\Pages;
-use App\Filament\Resources\TugasResource\RelationManagers;
-use Filament\Forms\Components\TextInput;
-use Filament\Tables\Columns\TextColumn;
-use App\Models\Tugas;
+use App\Filament\Resources\MobilResource\Pages;
+use App\Filament\Resources\MobilResource\RelationManagers;
+use App\Models\Mobil;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -15,9 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class TugasResource extends Resource
+class MobilResource extends Resource
 {
-    protected static ?string $model = Tugas::class;
+    protected static ?string $model = Mobil::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -25,9 +23,7 @@ class TugasResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('nama_tugas'),
-                TextInput::make('kode_tugas'),
-                TextInput::make('deskripsi_tugas'),
+                //
             ]);
     }
 
@@ -35,19 +31,13 @@ class TugasResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('nama_tugas'),
-                TextColumn::make('deskripsi_tugas'),
-                TextColumn::make('kode_tugas'),
+                //
             ])
-            ->emptyStateHeading('Tidak ada tugas')
-            ->emptyStateDescription('Silahkan tambah     tugas terlebih dahulu.')
-
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -66,9 +56,9 @@ class TugasResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListTugas::route('/'),
-            'create' => Pages\CreateTugas::route('/create'),
-            'edit' => Pages\EditTugas::route('/{record}/edit'),
+            'index' => Pages\ListMobils::route('/'),
+            'create' => Pages\CreateMobil::route('/create'),
+            'edit' => Pages\EditMobil::route('/{record}/edit'),
         ];
     }
 }
