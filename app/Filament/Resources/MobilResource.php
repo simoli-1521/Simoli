@@ -12,6 +12,9 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+
 
 class MobilResource extends Resource
 {
@@ -23,7 +26,12 @@ class MobilResource extends Resource
     {
         return $form
             ->schema([
-                //
+                TextInput::make('nama'),
+                TextInput::make('nopol'),
+                TextInput::make('merk'),
+                TextInput::make('tipe'),
+                TextInput::make('thn_pembuatan'),
+                TextInput::make('warna'),
             ]);
     }
 
@@ -31,7 +39,12 @@ class MobilResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('nama'),
+                TextColumn::make('nopol'),
+                TextColumn::make('merk'),
+                TextColumn::make('tipe'),
+                TextColumn::make('thn_pembuatan'),
+                TextColumn::make('warna'),
             ])
             ->filters([
                 //

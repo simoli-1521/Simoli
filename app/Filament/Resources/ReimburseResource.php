@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PenjadwalanResource\Pages;
-use App\Filament\Resources\PenjadwalanResource\RelationManagers;
-use App\Models\Penjadwalan;
+use App\Filament\Resources\ReimburseResource\Pages;
+use App\Filament\Resources\ReimburseResource\RelationManagers;
+use App\Models\Reimburse;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -12,17 +12,15 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Radio;
 
 
-class PenjadwalanResource extends Resource
+class ReimburseResource extends Resource
 {
-    protected static ?string $model = Penjadwalan::class;
+    protected static ?string $model = Reimburse::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -32,12 +30,21 @@ class PenjadwalanResource extends Resource
             ->schema([
                 Select::make('id_user')
                     ->relationship('users', 'name'),
-                // TextInput::make('id_surat'),
-                    Select::make('id_surat')
-                    ->relationship('surat', 'nomor_surat'),
-                Select::make('id_mobil')
-                    ->relationship('mobils', 'nama'),
-
+                Select::make('id_bbm')
+                    ->relationship('bbm', 'tgl_pengisian'),
+                Select::make('id_souvenir')
+                    ->relationship('souvenir', 'nama'),
+                DateTimePicker::make('tgl_pengajuan'),
+                DateTimePicker::make('tgl_diterima'),
+                DateTimePicker::make('tgl_ditolak'),
+                TextInput::make('status'),
+                TextInput::make('biaya')->numeric(),
+                Radio::make('jenis_reimburse')
+                    ->options([
+                        'bbm' => 'BBM',
+                        'souvenir' => 'Souvenir',
+                    ]),
+                
             ]);
     }
 
@@ -45,9 +52,7 @@ class PenjadwalanResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('users.name'),
-                TextColumn::make('surat.nomor_surat'),
-                TextColumn::make('mobils.nama_mobil'),
+                //
             ])
             ->filters([
                 //
@@ -72,9 +77,9 @@ class PenjadwalanResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPenjadwalans::route('/'),
-            'create' => Pages\CreatePenjadwalan::route('/create'),
-            'edit' => Pages\EditPenjadwalan::route('/{record}/edit'),
+            'index' => Pages\ListReimburses::route('/'),
+            'create' => Pages\CreateReimburse::route('/create'),
+            'edit' => Pages\EditReimburse::route('/{record}/edit'),
         ];
     }
 }

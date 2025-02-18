@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PenjadwalanResource\Pages;
-use App\Filament\Resources\PenjadwalanResource\RelationManagers;
-use App\Models\Penjadwalan;
+use App\Filament\Resources\SouvenirResource\Pages;
+use App\Filament\Resources\SouvenirResource\RelationManagers;
+use App\Models\Souvenir;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -12,17 +12,12 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\TimePicker;
-use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\TextColumn;
 
-
-class PenjadwalanResource extends Resource
+class SouvenirResource extends Resource
 {
-    protected static ?string $model = Penjadwalan::class;
+    protected static ?string $model = Souvenir::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -30,14 +25,11 @@ class PenjadwalanResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('id_user')
-                    ->relationship('users', 'name'),
-                // TextInput::make('id_surat'),
-                    Select::make('id_surat')
-                    ->relationship('surat', 'nomor_surat'),
-                Select::make('id_mobil')
-                    ->relationship('mobils', 'nama'),
-
+                TextInput::make('nama'),
+                TextInput::make('jenis'),
+                TextInput::make('merk'),
+                TextInput::make('stok')->numeric(),
+                TextInput::make('harga')->numeric(),
             ]);
     }
 
@@ -45,9 +37,12 @@ class PenjadwalanResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('users.name'),
-                TextColumn::make('surat.nomor_surat'),
-                TextColumn::make('mobils.nama_mobil'),
+                TextColumn::make('nama'),
+                TextColumn::make('jenis'),
+                TextColumn::make('merk'),
+                TextColumn::make('stok'),
+                TextColumn::make('harga'),
+
             ])
             ->filters([
                 //
@@ -72,9 +67,9 @@ class PenjadwalanResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPenjadwalans::route('/'),
-            'create' => Pages\CreatePenjadwalan::route('/create'),
-            'edit' => Pages\EditPenjadwalan::route('/{record}/edit'),
+            'index' => Pages\ListSouvenirs::route('/'),
+            'create' => Pages\CreateSouvenir::route('/create'),
+            'edit' => Pages\EditSouvenir::route('/{record}/edit'),
         ];
     }
 }
