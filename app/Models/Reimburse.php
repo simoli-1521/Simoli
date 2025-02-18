@@ -4,22 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Penjadwalan extends Model
+class Reimburse extends Model
 {
     protected $guarded = [];
- 
+
     public function users()
     {
         return $this->belongsTo(User::class);
     }
-    
-    public function mobils()
+
+    public function bbm()
     {
-        return $this->belongsTo(Mobil::class);
+        return $this->belongsTo(BBM::class);
     }
 
-    public function surat()
+    public function souvenir()
     {
-        return $this->belongsTo(Surat::class);
+        return $this->belongsTo(Souvenir::class);
     }
 }

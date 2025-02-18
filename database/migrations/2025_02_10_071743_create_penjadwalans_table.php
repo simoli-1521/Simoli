@@ -13,15 +13,12 @@ return new class extends Migration
     {
         Schema::create('penjadwalans', function (Blueprint $table) {
             $table->id();
-            $table->string('id_user');
-            $table->date('tanggal');
-            $table->time('waktu_mulai');
-            $table->time('waktu_akhir');
-            $table->string('nama_lokasi');
-            $table->float('latitude');
-            $table->float('longtude ');
-            $table->float('radius');
-            $table->foreignid('id_mobil')->constrained('mobil', 'id');
+            $table->unsignedBigInteger('id_user');
+            $table->unsignedBigInteger('id_surat');
+            $table->unsignedBigInteger('id_mobil');
+            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('id_surat')->references('id')->on('surats')->onDelete('cascade');
+            $table->foreign('id_mobil')->references('id')->on('mobils')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -31,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tugas');
+        Schema::dropIfExists('penjadwalans');
     }
 };
