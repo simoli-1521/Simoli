@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TimePicker;
-
+use Filament\Tables\Columns\TextColumn;
 
 class KehadiranResource extends Resource
 {
@@ -45,7 +45,10 @@ class KehadiranResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('users.name'),
+                TextColumn::make('penjadwalan.id'),
+                TextColumn::make('waktu_mulai'),
+                TextColumn::make('waktu_selesai'),
             ])
             ->filters([
                 //

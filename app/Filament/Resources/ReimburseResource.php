@@ -16,6 +16,11 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Hidden;
+use Filament\Tables\Columns\TextColumn;
+
 
 
 class ReimburseResource extends Resource
@@ -30,20 +35,50 @@ class ReimburseResource extends Resource
             ->schema([
                 Select::make('id_user')
                     ->relationship('users', 'name'),
-                Select::make('id_bbm')
-                    ->relationship('bbm', 'tgl_pengisian'),
-                Select::make('id_souvenir')
-                    ->relationship('souvenir', 'nama'),
+                // Select::make('id_bbm')
+                //     ->relationship('bbm', 'tgl_pengisian'),
+                // Select::make('id_souvenir')
+                //     ->relationship('souvenir', 'nama'),
+                Radio::make('jenis_reimburse')
+                ->options([
+                    'bbm' => 'BBM',
+                    'souvenir' => 'Souvenir',
+                ])
+                ->reactive(),
+
+                // Fields for Option 1
+                Section::make('BBM')
+                ->schema([
+                    Group::make()->relationship('bbm')
+                    ->schema([
+                        // Hidden::make('bbm.id'),
+                        DateTimePicker::make('tgl_pengisian'),
+                        TextInput::make('jml_liter')->numeric(),
+                        TextInput::make('harga')->numeric(),
+                    ]),
+                ])
+                ->hidden(fn (callable $get) => $get('jenis_reimburse') !== 'bbm'),
+
+                // Fields for Option 2
+                Section::make('Souvenir')
+                ->schema([
+                    Group::make()->relationship('souvenir')
+                    ->schema([
+                        // Hidden::make('souvenir.id'),
+                        TextInput::make('nama'),
+                        TextInput::make('jenis'),
+                        TextInput::make('merk'),
+                        TextInput::make('stok')->numeric(),
+                        TextInput::make('harga')->numeric(),
+                    ]),
+                ])
+                ->hidden(fn (callable $get) => $get('jenis_reimburse') !== 'souvenir'),
                 DateTimePicker::make('tgl_pengajuan'),
                 DateTimePicker::make('tgl_diterima'),
                 DateTimePicker::make('tgl_ditolak'),
                 TextInput::make('status'),
                 TextInput::make('biaya')->numeric(),
-                Radio::make('jenis_reimburse')
-                    ->options([
-                        'bbm' => 'BBM',
-                        'souvenir' => 'Souvenir',
-                    ]),
+                
                 
             ]);
     }
@@ -52,7 +87,10 @@ class ReimburseResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('users.name'),
+                TextColumn::make('jenis_reimburse'),
+                TextColumn::make('tgl_pengajuan'),
+                TextColumn::make('status'),
             ])
             ->filters([
                 //
