@@ -76,7 +76,11 @@ class ReimburseResource extends Resource
                 DateTimePicker::make('tgl_pengajuan'),
                 DateTimePicker::make('tgl_diterima'),
                 DateTimePicker::make('tgl_ditolak'),
-                TextInput::make('status'),
+                Select::make('status')
+                ->options([
+                    'diterima' => 'Diterima',
+                    'ditolak' => 'Dtolak',
+                ]),
                 TextInput::make('biaya')->numeric(),
                 
                 
