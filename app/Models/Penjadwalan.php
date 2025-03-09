@@ -10,16 +10,16 @@ class Penjadwalan extends Model
  
     public function users()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'id_user');
     }
     
     public function mobils()
     {
-        return $this->belongsTo(Mobil::class);
+        return $this->belongsTo(Mobil::class, 'id_mobil');
     }
 
     public function surat()
     {
-        return $this->belongsTo(Surat::class);
+        return $this->belongsTo(Surat::class, 'id_surat');
     }
 }

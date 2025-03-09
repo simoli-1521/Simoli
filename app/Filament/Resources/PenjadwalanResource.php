@@ -47,7 +47,7 @@ class PenjadwalanResource extends Resource
             ->columns([
                 TextColumn::make('users.name'),
                 TextColumn::make('surat.nomor_surat'),
-                TextColumn::make('mobils.nama_mobil'),
+                TextColumn::make('mobils.nama'),
             ])
             ->filters([
                 //
