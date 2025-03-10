@@ -14,8 +14,19 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TimePicker;
+use Filament\Forms\Components\Actions;
+use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Section;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Notifications\Notification;
+use App\Models\Penjadwalan;
+use App\Models\Surat;
+use App\Models\JamKerja;
+use App\Models\Lokasi;
+use Dotswan\MapPicker\Fields\Map;
+use Filament\Forms\Set;
+use Filament\Forms\Components\DateTimePicker;
 
 class KehadiranResource extends Resource
 {
@@ -27,17 +38,188 @@ class KehadiranResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('id_user')
-                    ->relationship('users', 'name'),
-                Select::make('id_penjadwalan')
-                    ->relationship('penjadwalan', 'id'),
-                TextInput::make('jadwal_lokasi_peta'),
-                TimePicker::make('jadwal_waktu_mulai'),
-                TimePicker::make('jadwal_waktu_selesai'),
-                TextInput::make('lokasi_peta'),
-                TimePicker::make('waktu_mulai'),
-                TimePicker::make('waktu_selesai'),
+                // Select::make('id_user')
+                //     ->relationship('users', 'name'),
+                // Select::make('id_penjadwalan')
+                Hidden::make('id_user'),
+                Hidden::make('id_penjadwalan')
+                    // // ->relationship('penjadwalan', 'id')
+                    // ->options(function () {
+                    //     $penjadwalan = Penjadwalan::whereHas('surat.jamkerja', function ($query) {
+                    //         $query->whereDate('tgl', today());
+                    //     })->pluck('id'); // Get matching assignment IDs
+                
+                    //     return Penjadwalan::whereIn('id', $penjadwalan)
+                    //         ->pluck('id', 'id');
+                    //         // ->with('surat')->get()->mapWithKeys(fn ($att) => [$att->id => "{$att->id} {$att->nama_kegiatan}"]);
 
+
+                    // })
+                    // ->reactive()
+                    // ->afterStateUpdated(function ($state, callable $set, $livewire) {
+                    //     // $findpenjadwalan = Penjadwalan::find($state)?->id_surat;
+                    //     // $findsurat = Surat::find($findpenjadwalan)?->id_lokasi;
+                    //     // $findlokasi = Lokasi::find($findsurat);
+                    //     // $findjamkerja = JamKerja::find($findsurat);
+                    //     $penjadwalan = Penjadwalan::with(['surat.lokasi', 'surat.jamkerja'])->find($state);
+                    //     $lokasi = $penjadwalan->surat->lokasi ?? null;
+                    //     $jamkerja = $penjadwalan->surat->jamkerja ?? null;
+                    //     if($lokasi){
+                    //         $set('jadwal_lokasi_peta', ['lat' => $lokasi->latitude, 'lng' => $lokasi->longtitude]);
+                    //         $set('jadwal_lokasi_peta_latitude', $lokasi->latitude);
+                    //         $set('jadwal_lokasi_peta_longtitude', $lokasi->longtitude);
+                    //         $set('jadwal_lokasi_peta_radius', $lokasi->radius);
+                            
+                    //         $livewire->dispatch('refreshMap');    
+                    //     }
+                    //     if($jamkerja){
+                    //         $set('jadwal_waktu_mulai', "{$jamkerja->tgl} {$jamkerja->jam_mulai}");
+                    //         $set('jadwal_waktu_selesai', "{$jamkerja->tgl} {$jamkerja->jam_akhir}");
+                    //     }
+                    // })
+                    ->afterStateHydrated(function ($state, callable $set, $livewire) {
+                        // $findpenjadwalan = Penjadwalan::find($state)?->id_surat;
+                        // $findsurat = Surat::find($findpenjadwalan)?->id_lokasi;
+                        // $findlokasi = Lokasi::find($findsurat);
+                        // $findjamkerja = JamKerja::find($findsurat);
+                        $penjadwalan = Penjadwalan::with(['surat.lokasi', 'surat.jamkerja'])->find($state);
+                        $lokasi = $penjadwalan->surat->lokasi ?? null;
+                        $jamkerja = $penjadwalan->surat->jamkerja ?? null;
+                        if($lokasi){
+                            $set('jadwal_lokasi_peta', ['lat' => $lokasi->latitude, 'lng' => $lokasi->longtitude]);
+                            $set('jadwal_lokasi_peta_latitude', $lokasi->latitude);
+                            $set('jadwal_lokasi_peta_longtitude', $lokasi->longtitude);
+                            $set('jadwal_lokasi_peta_radius', $lokasi->radius);
+                            
+                            $livewire->dispatch('refreshMap');    
+                        }
+                        if($jamkerja){
+                            $set('jadwal_waktu_mulai', "{$jamkerja->tgl} {$jamkerja->jam_mulai}");
+                            $set('jadwal_waktu_selesai', "{$jamkerja->tgl} {$jamkerja->jam_akhir}");
+                        }
+                    }),
+                    Hidden::make('jadwal_lokasi_peta_latitude')
+                    ->dehydrated(false),
+                        // ->disabled(),
+                    Hidden::make('jadwal_lokasi_peta_longtitude')
+                    ->dehydrated(false),
+                        // ->disabled(),
+                    Hidden::make('jadwal_lokasi_peta_radius')
+                    ->dehydrated(false),
+                        // ->disabled(),
+                    Map::make('jadwal_lokasi_peta')
+                        ->disabled()    
+                        ->columnSpanFull()
+                        ->defaultLocation(latitude: -7.0530, longitude: 110.4092)
+                        ->draggable(false)
+                        ->showMarker(true)
+                        ->showZoomControl(false)
+                        ->minZoom(16)
+                        ->maxZoom(16)
+                        ->rangeSelectField('jadwal_lokasi_peta_radius')
+                        ->showFullscreenControl(false),
+                        // ->afterStateUpdated(function (Set $set, ?array $state): void {
+                        //     $set('jadwal_lokasi_peta_latitude', $state['lat']);
+                        //     $set('jadwal_lokasi_peta_longtitude', $state['lng']);
+                        // }),
+                        // ->afterStateHydrated(function ($state, $record, Set $set): void {
+                        //     $latitude = $record->jadwal_lokasi_peta_latitude;
+                        //     $longitude = $record->jadwal_lokasi_peta_longtitude;
+                        //     }),  
+                // TextInput::make('lokasi_peta'),
+                Hidden::make('lokasi_peta_latitude'),
+                    // ->readonly(),
+                    // ->hidden(),                 
+                Hidden::make('lokasi_peta_longtitude'),
+                    // ->readonly(),
+                    // ->hidden(), 
+                Map::make('lokasi_peta')
+                    ->disabled()
+                    ->columnSpanFull()
+                    ->defaultLocation(latitude: -7.0530, longitude: 110.4092)
+                    ->showMarker(true)
+                    ->showMyLocationButton()
+                    ->draggable(false)
+                    ->liveLocation(true, true)
+                    ->showFullscreenControl(false)
+                    ->afterStateUpdated(function (Set $set, ?array $state): void {
+                        $set('lokasi_peta_latitude', $state['lat']);
+                        $set('lokasi_peta_longtitude', $state['lng']);
+                    }),
+                    DateTimePicker::make('jadwal_waktu_mulai')->disabled(),
+                    DateTimePicker::make('jadwal_waktu_selesai')->disabled(),
+                    Select::make('Presensi')
+                    ->dehydrated(false)
+                    ->options([
+                        'awal' => 'Awal',
+                        'akhir' => 'Akhir',
+                    ])
+                ->reactive(),
+                    Section::make('Awal')->schema([
+                        DateTimePicker::make('waktu_mulai')->readonly(),
+                        Actions::make([
+                            Action::make('Set_Current_DateTime')
+                            ->label('Set Now')
+                            ->action(function ($record, callable $set, callable $get) {
+                                $attendanceLat = $get('jadwal_lokasi_peta_latitude');
+                                $attendanceLng = $get('jadwal_lokasi_peta_longtitude');
+                                $userLat = $get('lokasi_peta_latitude');
+                                $userLng = $get('lokasi_peta_longtitude');
+                                $radius = $get('jadwal_lokasi_peta_radius');
+                                if(self::haversineDistance(
+                                        $attendanceLat, $attendanceLng,
+                                        $userLat, $userLng, $radius)){
+                                            $set('waktu_mulai', now()->format('Y-m-d H:i:s'));
+                                }else{
+                                    Notification::make()
+                                    ->title('You are outside the attendance area!')
+                                    ->danger()
+                                    ->send();               
+                                }
+                            }) 
+                            ->icon('heroicon-o-clock')
+                            ->disabled(function (callable $get) {
+                                if ($get('jadwal_waktu_mulai')  === null) {
+                                    return true; // Disable button if target_time is not set
+                                }
+                                return time() < strtotime($get('jadwal_waktu_mulai')) - 3600 || time() > strtotime($get('jadwal_waktu_mulai'));
+                                // $distance = $this->haversineDistance(
+                                //     $get(jadwal_lokasi_peta_latitude), $get(jadwal_lokasi_peta_longtitude),
+                                //     $get(lokasi_peta_latitude), $get(lokasi_peta_longtitude));
+                                // return $distance <= $this->radius;
+                            } ),
+                        ])
+                    ])->hidden(fn (callable $get) => $get('Presensi') !== 'awal'),
+                    Section::make('Akhir')->schema([
+                        DateTimePicker::make('waktu_selesai')->readonly(),
+                        Actions::make([
+                            Action::make('Set_Current_DateTime')
+                            ->label('Set Now')
+                            ->action(function (Forms\Set $set) {
+                                $attendanceLat = $get('jadwal_lokasi_peta_latitude');
+                                $attendanceLng = $get('jadwal_lokasi_peta_longtitude');
+                                $userLat = $get('lokasi_peta_latitude');
+                                $userLng = $get('lokasi_peta_longtitude');
+                                $radius = $get('jadwal_lokasi_peta_radius');
+                                if(self::haversineDistance(
+                                    $attendanceLat, $attendanceLng,
+                                        $userLat, $userLng, $radius)){
+                                            $set('waktu_selesai', now()->format('Y-m-d H:i:s'));
+                                        }else{
+                                            Notification::make()
+                                            ->title('You are outside the attendance area!')
+                                            ->danger()
+                                            ->send();               
+                                        }
+                            })
+                            ->icon('heroicon-o-clock')
+                            ->disabled(function (callable $get) {
+                                if ($get('jadwal_waktu_selesai')  === null) {
+                                    return true;
+                                }
+                                return time() < strtotime($get('jadwal_waktu_selesai')) || time() > strtotime($get('jadwal_waktu_selesai'))+ 3600;} ),
+                        ])
+                    ])->hidden(fn (callable $get) => $get('Presensi') !== 'akhir'),
             ]);
     }
 
@@ -46,9 +228,9 @@ class KehadiranResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('users.name'),
-                TextColumn::make('penjadwalan.id'),
-                TextColumn::make('waktu_mulai'),
-                TextColumn::make('waktu_selesai'),
+                TextColumn::make('penjadwalan.surat.nama_kegiatan')->label('Nama Kegiatan'),
+                TextColumn::make('waktu_mulai')->label('Presensi Awal'),
+                TextColumn::make('waktu_selesai')->label('Presensi Akhir'),
             ])
             ->filters([
                 //
@@ -61,6 +243,23 @@ class KehadiranResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public static function haversineDistance($lat1, $lng1, $lat2, $lng2, $radius)
+    {
+        $earthRadius = 6371000; // Radius of Earth in meters
+
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLng = deg2rad($lng2 - $lng1);
+
+        $a = sin($dLat / 2) * sin($dLat / 2) +
+             cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+             sin($dLng / 2) * sin($dLng / 2);
+
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+        $distance = $earthRadius * $c; // Distance in meters
+        return $distance <= $radius;
     }
 
     public static function getRelations(): array
