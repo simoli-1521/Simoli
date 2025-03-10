@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->dateTime('tgl_pengisian');
             $table->integer('jml_liter');
+            $table->string('jenis_bbm');
             $table->integer('harga');
+            $table->integer('total_harga');
             $table->timestamps();
         });
     }

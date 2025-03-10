@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('reimburses', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_user');
-            $table->unsignedBigInteger('id_bbm');
-            $table->unsignedBigInteger('id_souvenir');
+            $table->unsignedBigInteger('id_bbm')->nullable();
+            // $table->unsignedBigInteger('id_souvenir');
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('id_bbm')->references('id')->on('bbms')->onDelete('cascade');
-            $table->foreign('id_souvenir')->references('id')->on('souvenirs')->onDelete('cascade');
-            $table->dateTime('tgl_pengajuan');
+            // $table->foreign('id_souvenir')->references('id')->on('souvenirs')->onDelete('cascade');
+            $table->dateTime('tgl_pengajuan')->nullable();
             $table->dateTime('tgl_diterima')->nullable();
             $table->dateTime('tgl_ditolak');
             $table->string('status');

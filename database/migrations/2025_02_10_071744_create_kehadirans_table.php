@@ -17,10 +17,12 @@ return new class extends Migration
             $table->unsignedBigInteger('id_penjadwalan');
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('id_penjadwalan')->references('id')->on('penjadwalans')->onDelete('cascade');
-            $table->geometry('jadwal_lokasi_peta', subtype: 'point', srid: 0);
-            $table->timestamp('jadwal_waktu_mulai')->nullable();
-            $table->timestamp('jadwal_waktu_selesai')->nullable();
-            $table->geometry('lokasi_peta', subtype: 'point', srid: 0);
+            // $table->float('jadwal_lokasi_peta_latitude');
+            // $table->float('jadwal_lokasi_peta_longtitude');
+            // $table->timestamp('jadwal_waktu_mulai')->nullable();
+            // $table->timestamp('jadwal_waktu_selesai')->nullable();
+            $table->float('lokasi_peta_latitude')->nullable();
+            $table->float('lokasi_peta_longtitude')->nullable();
             $table->timestamp('waktu_mulai')->nullable();
             $table->timestamp('waktu_selesai')->nullable();
             $table->timestamps();
