@@ -54,8 +54,8 @@ class SuratResource extends Resource
                                 // ->dehydrated(false)
                                 ->showFullscreenControl(false)
                                 ->afterStateHydrated(function ($state, $record, Forms\Set $set): void {
-                                    $lats = $record->latitude;
-                                    $lngs = $record->longtitude;
+                                    $lats = $record?->latitude;
+                                    $lngs = $record?->longtitude;
                                     $set('lokasi_peta', ['lat' => $lats, 'lng' => $lngs]);
                                 })
                                 ->afterStateUpdated(function (Forms\Set $set, $state): void {
