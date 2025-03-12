@@ -260,18 +260,39 @@ class KehadiranResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
+        return $table->recordUrl(null)
             ->columns([
                 TextColumn::make('users.name'),
                 TextColumn::make('penjadwalan.surat.nama_kegiatan')->label('Nama Kegiatan'),
                 TextColumn::make('waktu_mulai')->label('Presensi Awal'),
                 TextColumn::make('waktu_selesai')->label('Presensi Akhir'),
+                TextColumn::make('waktu_mulai_status')->label('Status Presensi Awal'),
+                TextColumn::make('waktu_selesai_status')->label('Status Presensi Akhir'),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                ->hidden(fn($record) => $record->waktu_selesai_status !== null),
+                Tables\Actions\Action::make('Izin')
+                    ->form([
+                        Select::make('Izin_Presensi')
+                        ->options([
+                            'sakit' => 'Sakit',
+                            'ijin' => 'Ijin',
+                        ])
+                    ])->action(function ($record, $data) {
+                        $record->update([
+                            'waktu_mulai' => now()->format('Y-m-d H:i:s'),
+                            'waktu_selesai' => now()->format('Y-m-d H:i:s'),
+                            'waktu_mulai_status' => $data['Izin_Presensi'],
+                            'waktu_selesai_status' => $data['Izin_Presensi'],
+                        ]);
+                    })->hidden(fn($record) => $record->waktu_selesai_status !== null),
+                    Tables\Actions\Action::make('Laporan')
+                    ->url(fn($record)=>self::getUrl("laporan", ['record' => $record->id]))
+                    ->hidden(fn($record) => $record->waktu_selesai_status == null),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -310,6 +331,7 @@ class KehadiranResource extends Resource
             'index' => Pages\ListKehadirans::route('/'),
             'create' => Pages\CreateKehadiran::route('/create'),
             'edit' => Pages\EditKehadiran::route('/{record}/edit'),
+            'laporan' => Pages\LaporanKehadiran::route('/{record}/laporan'),
         ];
     }
 }
