@@ -21,33 +21,39 @@ use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
 use Filament\Pages\Dashboard;
-use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
+use App\Filament\Resources\ReimburseResource;
+use App\Models\Reimburse;
+use App\Filament\Resources\SouvenirResource;
+use App\Models\Souvenir;
+use App\Filament\Resources\BBMResource;
+use App\Models\Bbm;
 
-
-class AdminPanelProvider extends PanelProvider
+class KeuanganPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->default()
-            ->id('admin')
-            ->path('admin')
+            ->id('keuangan')
+            ->path('keuangan')
             ->login()
             ->colors([
                 'primary' => Color::Amber,
             ])
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->resources([
+                ReimburseResource::class,
+                SouvenirResource::class,
+                BBMResource::class,
+            ])
+            // ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
+            // ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                // Widgets\AccountWidget::class,
-                // Widgets\FilamentInfoWidget::class,
-                
+                Widgets\AccountWidget::class,
+                Widgets\FilamentInfoWidget::class,
             ])
-            ->spa()
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -62,17 +68,23 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->plugin(FilamentSpatieRolesPermissionsPlugin::make())
             // ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
             //     return $builder->groups([
             //         NavigationGroup::make('Dashboard')
             //             ->items([
             //                 NavigationItem::make('Dashboard')
             //                     ->icon('heroicon-o-home')
-            //                     ->isActiveWhen(fn(): bool => request()->routeIs('filament.admin.pages.dashboard'))
+            //                     ->isActiveWhen(fn(): bool => request()->routeIs('filament.keuangan.pages.dashboard'))
             //                     ->url(fn(): string => Dashboard::getUrl()),
             //             ]),
-            //         ]);
+            //         NavigationGroup::make('Reimburse')
+            //         ->items([
+            //             ...ReimburseResource::getNavigationItems(),
+            //             // ...SouvenirResource::getNavigationItems(),
+            //             // ...BBMResource::getNavigationItems(),
+                        
+            //         ]),
+            //     ]);
             // })
             ;
     }

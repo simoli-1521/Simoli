@@ -21,17 +21,16 @@ use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
 use Filament\Pages\Dashboard;
-use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
+use App\Filament\Resources\ReimburseResource;
+use App\Models\Reimburse;
 
-
-class AdminPanelProvider extends PanelProvider
+class KadinPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->default()
-            ->id('admin')
-            ->path('admin')
+            ->id('kadin')
+            ->path('kadin')
             ->login()
             ->colors([
                 'primary' => Color::Amber,
@@ -43,11 +42,9 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                // Widgets\AccountWidget::class,
-                // Widgets\FilamentInfoWidget::class,
-                
+                Widgets\AccountWidget::class,
+                Widgets\FilamentInfoWidget::class,
             ])
-            ->spa()
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -62,7 +59,6 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->plugin(FilamentSpatieRolesPermissionsPlugin::make())
             // ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
             //     return $builder->groups([
             //         NavigationGroup::make('Dashboard')
@@ -72,7 +68,11 @@ class AdminPanelProvider extends PanelProvider
             //                     ->isActiveWhen(fn(): bool => request()->routeIs('filament.admin.pages.dashboard'))
             //                     ->url(fn(): string => Dashboard::getUrl()),
             //             ]),
-            //         ]);
+            //         // NavigationGroup::make('Reimburse')
+            //         // ->items([
+            //         //     ...ReimburseResource::getNavigationItems(),
+            //         // ]),
+            //     ]);
             // })
             ;
     }
