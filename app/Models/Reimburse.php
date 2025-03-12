@@ -23,6 +23,6 @@ class Reimburse extends Model
 
     public function souvenir()
     {
-        return $this->belongsTo(Souvenir::class, 'id_souvenir');
+        return $this->hasMany(Souvenir::class, 'id_reimburses');
     }
 }
