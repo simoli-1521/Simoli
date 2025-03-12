@@ -25,6 +25,8 @@ return new class extends Migration
             $table->float('lokasi_peta_longtitude')->nullable();
             $table->timestamp('waktu_mulai')->nullable();
             $table->timestamp('waktu_selesai')->nullable();
+            $table->string('waktu_mulai_status', 255);
+            $table->string('waktu_selesai_status', 255);
             $table->timestamps();
         });
     }
