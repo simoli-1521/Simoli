@@ -152,6 +152,9 @@ class ReimburseResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('Laporan')
+                    ->url(fn($record)=>self::getUrl("laporan", ['record' => $record->id]))
+                    ->hidden(fn($record) => $record->status !== "diterima"),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -173,6 +176,7 @@ class ReimburseResource extends Resource
             'index' => Pages\ListReimburses::route('/'),
             'create' => Pages\CreateReimburse::route('/create'),
             'edit' => Pages\EditReimburse::route('/{record}/edit'),
+            'laporan' => Pages\LaporanReimburse::route('/{record}/laporan'),
         ];
     }
 }
