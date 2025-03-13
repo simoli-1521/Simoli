@@ -15,8 +15,11 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TimePicker;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Pengajuan;
 use App\Filament\Resources\SuratResource\Pages;
 use Dotswan\MapPicker\Fields\Map;
 
@@ -111,9 +114,99 @@ class SuratResource extends Resource
                 ImageColumn::make('ttd_PJ')->disk('public')->label('Tanda Tangan PJ'),
                 TextColumn::make('narahubung')->label('Narahubung'),
                 ImageColumn::make('qr_validasi')->disk('public')->label('QR Validasi'),
+                TextColumn::make('pengajuan.status_admin')->label('Status Pengajuan Admin'),
+                TextColumn::make('pengajuan.status_sekdin')->label('Status Pengajuan Sekdin'),
+                TextColumn::make('pengajuan.status_kadin')->label('Status Pengajuan Kadin'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('Pengajuan Admin')
+                    ->form(fn ($record) =>[
+                        Select::make('status')
+                        ->reactive()
+                        ->options([
+                            'Diterima Admin' => 'Diterima',
+                            'Ditolak Admin' => 'Ditolak',
+                        ])->default(optional($record->pengajuan)->status_admin),
+                        DateTimePicker::make('tgl_diterima')
+                        ->readonly()
+                        ->formatstateusing(fn ($state) => $state ?? now()->format('Y-m-d H:i:s'))
+                        ->hidden(fn (callable $get) => $get('status') !== 'Diterima Admin')->default(optional($record->pengajuan)->tgl_diterima_admin),
+                        DateTimePicker::make('tgl_ditolak')
+                        ->readonly()
+                        ->formatstateusing(fn ($state) => $state ?? now()->format('Y-m-d H:i:s'))
+                        ->hidden(fn (callable $get) => $get('status') !== 'Ditolak Admin')->default(optional($record->pengajuan)->tgl_ditolak_admin),
+                        TextInput::make('keterangan')->default(optional($record->pengajuan)->keterangan_admin),
+                    ])
+                    ->action(function ($record, $data) {
+                        Pengajuan::updateOrCreate(
+                            ['id' => $record->id_pengajuan],
+                            [
+                            'tgl_pengajuan'=> $record->created_at,
+                            'status_admin'=> $data['status'],
+                            'tgl_diterima_admin'=> $data['tgl_diterima']?? null,
+                            'tgl_ditolak_admin'=> $data['tgl_ditolak']?? null,
+                            'keterangan_admin'=> $data['keterangan']?? null,
+                        ]);
+                    })->hidden(fn ($record) => !Auth::user()->hasRole('Admin')),
+                Tables\Actions\Action::make('Pengajuan Sekdin')
+                ->form(fn ($record) =>[
+                    Select::make('status')
+                    ->reactive()
+                    ->options([
+                        'Diterima Sekdin' => 'Diterima',
+                        'Ditolak Sekdin' => 'Ditolak',
+                    ])->default(optional($record->pengajuan)->status_sekdin),
+                    DateTimePicker::make('tgl_diterima')
+                    ->readonly()
+                    ->formatstateusing(fn ($state) => $state ?? now()->format('Y-m-d H:i:s'))
+                    ->hidden(fn (callable $get) => $get('status') !== 'Diterima Sekdin')->default(optional($record->pengajuan)->tgl_diterima_sekdin),
+                    DateTimePicker::make('tgl_ditolak')
+                    ->readonly()
+                    ->formatstateusing(fn ($state) => $state ?? now()->format('Y-m-d H:i:s'))
+                    ->hidden(fn (callable $get) => $get('status') !== 'Ditolak Sekdin')->default(optional($record->pengajuan)->tgl_ditolak_sekdin),
+                    TextInput::make('keterangan')->default(optional($record->pengajuan)->keterangan_sekdin),
+                ])
+                ->action(function ($record, $data) {
+                    Pengajuan::updateOrCreate(
+                        ['id' => $record->id_pengajuan],
+                        [
+                        'tgl_pengajuan'=> $record->created_at,
+                        'status_sekdin'=> $data['status'],
+                        'tgl_diterima_sekdin'=> $data['tgl_diterima']?? null,
+                        'tgl_ditolak_sekdin'=> $data['tgl_ditolak']?? null,
+                        'keterangan_sekdin'=> $data['keterangan']?? null,
+                    ]);
+                })->hidden(fn ($record) => !Auth::user()->hasRole('Sekretaris Dinas') || optional($record->pengajuan)->status_admin !== 'Diterima Admin'),
+                Tables\Actions\Action::make('Pengajuan Kadin')
+                ->form(fn ($record) =>[
+                    Select::make('status')
+                    ->reactive()
+                    ->options([
+                        'Diterima Kadin' => 'Diterima',
+                        'Ditolak Kadin' => 'Ditolak',
+                    ])->default(optional($record->pengajuan)->status_kadin),
+                    DateTimePicker::make('tgl_diterima')
+                    ->readonly()
+                    ->formatstateusing(fn ($state) => $state ?? now()->format('Y-m-d H:i:s'))
+                    ->hidden(fn (callable $get) => $get('status') !== 'Diterima Kadin')->default(optional($record->pengajuan)->tgl_diterima_kadin),
+                    DateTimePicker::make('tgl_ditolak')
+                    ->readonly()
+                    ->formatstateusing(fn ($state) => $state ?? now()->format('Y-m-d H:i:s'))
+                    ->hidden(fn (callable $get) => $get('status') !== 'Ditolak Kadin')->default(optional($record->pengajuan)->tgl_ditolak_kadin),
+                    TextInput::make('keterangan')->default(optional($record->pengajuan)->keterangan_kadin),
+                ])
+                ->action(function ($record, $data) {
+                    Pengajuan::updateOrCreate(
+                        ['id' => $record->id_pengajuan],
+                        [
+                        'tgl_pengajuan'=> $record->created_at,
+                        'status_kadin'=> $data['status'],
+                        'tgl_diterima_kadin'=> $data['tgl_diterima']?? null,
+                        'tgl_ditolak_kadin'=> $data['tgl_ditolak']?? null,
+                        'keterangan_kadin'=> $data['keterangan']?? null,
+                    ]);
+                })->hidden(fn ($record) => !Auth::user()->hasRole('Kepala Dinas') || optional($record->pengajuan)->status_admin !== 'Diterima Admin'|| optional($record->pengajuan)->status_sekdin !== 'Diterima Sekdin'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
