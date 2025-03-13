@@ -31,7 +31,11 @@ class PenjadwalanResource extends Resource
         return $form
             ->schema([
                 Select::make('id_user')
-                    ->relationship('users', 'name'),
+                    ->relationship('users', 'name', function ($query){
+                        $query->whereHas('roles', function($roleQuery){
+                            $roleQuery->where('name', 'Petugas');
+                        });
+                    }),
                 // TextInput::make('id_surat'),
                     Select::make('id_surat')
                     ->relationship('surat', 'nomor_surat'),
