@@ -17,7 +17,7 @@ class LaporanReimburse extends Page
 
     public function mount($record)
     {
-        $this->reimburse = Reimburse::find($record);
+        $this->reimburse = Reimburse::with(['bbm', 'souvenir'])->find($record);
         $this->record = Reimburse::findOrFail($record);
     }
 
