@@ -13,27 +13,27 @@ return new class extends Migration
     {
         Schema::create('pengajuans', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_user');
-            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
+            // $table->unsignedBigInteger('id_user');
+            // $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
             $table->dateTime('tgl_pengajuan');
-            $table->dateTime('tgl_diterima_admin');
-            $table->dateTime('tgl_ditolak_admin');
-            $table->dateTime('tgl_diterima_sekdin');
-            $table->dateTime('tgl_ditolak_sekdin');
-            $table->dateTime('tgl_diterima_kadin');
-            $table->dateTime('tgl_ditolak_kadin');
-            $table->dateTime('tgl_selesai');
-            $table->string('keterangan',1000);
-            $table->enum('status', [
-                'Diajukan',
+            $table->dateTime('tgl_diterima_admin')->nullable();
+            $table->dateTime('tgl_ditolak_admin')->nullable();
+            $table->dateTime('tgl_diterima_sekdin')->nullable();
+            $table->dateTime('tgl_ditolak_sekdin')->nullable();
+            $table->dateTime('tgl_diterima_kadin')->nullable();
+            $table->dateTime('tgl_ditolak_kadin')->nullable();
+            $table->string('keterangan_admin',1000)->nullable();
+            $table->string('keterangan_sekdin',1000)->nullable();
+            $table->string('keterangan_kadin',1000)->nullable();
+            $table->enum('status_admin', [
                 'Diterima Admin', 
-                'Ditolak Admin',
+                'Ditolak Admin',])->nullable();
+                $table->enum('status_sekdin', [
                 'Diterima Sekdin', 
-                'Ditolak Sekdin',
+                'Ditolak Sekdin',])->nullable();
+            $table->enum('status_kadin', [
                 'Diterima Kadin', 
-                'Ditolak Kadin', 
-                'Selesai'
-                ])->default('Diajukan');
+                'Ditolak Kadin',])->nullable();
             $table->timestamps();
         });
     }
