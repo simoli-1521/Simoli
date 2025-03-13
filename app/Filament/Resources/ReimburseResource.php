@@ -124,7 +124,6 @@ class ReimburseResource extends Resource
                     'diterima' => 'Diterima',
                     'ditolak' => 'Ditolak',
                 ])
-                // auth()->user()->hasRole('Bagian keuangan')
                 ->hidden(fn () => !Auth::user()->hasRole('Bagian Keuangan')),
                 DateTimePicker::make('tgl_diterima')
                 ->readonly()
@@ -145,7 +144,18 @@ class ReimburseResource extends Resource
                 TextColumn::make('users.name'),
                 TextColumn::make('jenis_reimburse'),
                 TextColumn::make('tgl_pengajuan'),
-                TextColumn::make('status'),
+                TextColumn::make('status')
+                ->badge()
+                ->icon(fn ($state): string => match ($state){
+                    'diterima' => 'heroicon-o-check-circle',
+                    'ditolak' => 'heroicon-o-x-circle',
+                    default => 'heroicon-o-x-question-mark-circle',
+                })
+                ->color(fn ($state): string => match ($state){
+                    'diterima' => 'success',
+                    'ditolak' => 'danger',
+                    default => 'gray',
+                }),
             ])
             ->filters([
                 //
