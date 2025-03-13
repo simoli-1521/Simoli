@@ -17,6 +17,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
 
 class KeterlambatanResource extends Resource
 {
@@ -29,7 +30,7 @@ class KeterlambatanResource extends Resource
         return $form
             ->schema([
                 Select::make('id_kehadiran')
-                    ->relationship('kehadiran', 'id_penjadwalan', fn ($query) => $query->where('waktu_mulai_status', 'Telat')
+                    ->relationship('kehadiran', 'waktu_mulai', fn ($query) => $query->where('waktu_mulai_status', 'Telat')
                     ->orWhere('waktu_selesai_status', 'Telat')),
                 RichEditor::make('keterangan')
                 ->label('Keterangan Terlambat')
@@ -52,6 +53,9 @@ class KeterlambatanResource extends Resource
     {
         return $table
             ->columns([
+                
+                TextColumn::make('kehadiran.penjadwalan.surat.nama_kegiatan')->label('Nama Kegiatan'),
+                TextColumn::make('keterangan')->limit(50)->label('Keterangan Terlambat'),
                 ImageColumn::make('foto')->disk('public')->label('Foto Bukti'),
             ])
             ->filters([
