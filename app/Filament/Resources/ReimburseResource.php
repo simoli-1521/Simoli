@@ -20,6 +20,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\Facades\Auth;
 
@@ -118,6 +119,13 @@ class ReimburseResource extends Resource
                     }
                     else{$set('biaya', 0);}
                 }),
+                FileUpload::make('foto_bukti')
+                            ->label('Foto Bukti')
+                            ->image()
+                            ->imageEditor()
+                            ->disk('public')
+                            ->directory('bukti_reimburse')
+                            ->visibility('public'),
                 Select::make('status')
                 ->reactive()
                 ->options([

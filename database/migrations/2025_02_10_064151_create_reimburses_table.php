@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('status');
             $table->integer('biaya');
             $table->enum('jenis_reimburse', ['bbm', 'souvenir'])->default('bbm');
+            $table->string('foto_bukti',255)->nullable();
             $table->timestamps();
         });
     }
