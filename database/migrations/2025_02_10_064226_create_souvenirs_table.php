@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('souvenirs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_reimburses');
-            $table->foreign('id_reimburses')->references('id')->on('reimburses')->onDelete('cascade');
+            $table->foreignId('reimburse_id')->constrained('reimburses', 'id')->onDelete('cascade');
             $table->string('nama',20);
             $table->string('jenis',20);
             $table->string('merk',20);

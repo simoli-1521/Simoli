@@ -6,10 +6,16 @@ use App\Filament\Resources\SuratResource;
 use Filament\Actions;
 use App\Models\Pengajuan;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\Facades\Auth;
 
 class CreateSurat extends CreateRecord
 {
     protected static string $resource = SuratResource::class;
+
+    public static function canAccess(array $parameters = []): bool
+    {
+        return  Auth::user()->hasRole('Pemohon Kegiatan');
+    }
 
     protected function afterCreate(): void
     {
@@ -18,7 +24,7 @@ class CreateSurat extends CreateRecord
             'tgl_pengajuan'=> $this->record->created_at,
         ]);
         $this->record->update([
-            'id_pengajuan' => $pengajuan->id,
+            'pengajuan_id' => $pengajuan->id,
         ]);
     }
 }

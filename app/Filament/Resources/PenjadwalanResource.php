@@ -30,17 +30,20 @@ class PenjadwalanResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('id_user')
+                Select::make('user_id')
                     ->relationship('users', 'name', function ($query){
                         $query->whereHas('roles', function($roleQuery){
                             $roleQuery->where('name', 'Petugas');
                         });
-                    }),
-                // TextInput::make('id_surat'),
-                    Select::make('id_surat')
-                    ->relationship('surat', 'nomor_surat'),
-                Select::make('id_mobil')
-                    ->relationship('mobils', 'nama'),
+                    })
+                    ->label('Pegawai'),
+                // TextInput::make('surat_id'),
+                    Select::make('surat_id')
+                    ->relationship('surat', 'nomor_surat')
+                    ->label('Surat'),
+                Select::make('mobil_id')
+                    ->relationship('mobils', 'nama')
+                    ->label('Mobil'),
 
             ]);
     }
@@ -49,7 +52,7 @@ class PenjadwalanResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('users.name'),
+                TextColumn::make('users.name')->label('Pegawai'),
                 TextColumn::make('surat.nomor_surat'),
                 TextColumn::make('mobils.nama'),
             ])
@@ -58,6 +61,7 @@ class PenjadwalanResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

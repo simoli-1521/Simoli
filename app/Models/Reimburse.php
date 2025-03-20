@@ -13,16 +13,16 @@ class Reimburse extends Model
 
     public function users()
     {
-        return $this->belongsTo(User::class, 'id_user');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function bbm()
     {
-        return $this->belongsTo(Bbm::class, 'id_bbm');
+        return $this->belongsTo(Bbm::class, 'bbm_id');
     }
 
     public function souvenir()
     {
-        return $this->hasMany(Souvenir::class, 'id_reimburses');
+        return $this->hasMany(Souvenir::class, 'reimburse_id');
     }
 }

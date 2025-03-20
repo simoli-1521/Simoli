@@ -18,6 +18,9 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
+use App\Filament\Resources\PenilaianPegawaiResource;
+use App\Filament\Resources\BookRequestResource;
+
 class PesertaPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -29,6 +32,10 @@ class PesertaPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
+            ->resources([
+                PenilaianPegawaiResource::class,
+                BookRequestResource::class,
+            ])
             ->discoverResources(in: app_path('Filament/Peserta/Resources'), for: 'App\\Filament\\Peserta\\Resources')
             ->discoverPages(in: app_path('Filament/Peserta/Pages'), for: 'App\\Filament\\Peserta\\Pages')
             ->pages([
@@ -37,7 +44,7 @@ class PesertaPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Peserta/Widgets'), for: 'App\\Filament\\Peserta\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                // Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

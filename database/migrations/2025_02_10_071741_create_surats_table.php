@@ -13,12 +13,9 @@ return new class extends Migration
     {
         Schema::create('surats', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_pengajuan')->nullable();
-            $table->unsignedBigInteger('id_jam_kerja')->nullable();
-            $table->unsignedBigInteger('id_lokasi')->nullable();
-            $table->foreign('id_pengajuan')->references('id')->on('pengajuans')->onDelete('cascade');
-            $table->foreign('id_jam_kerja')->references('id')->on('jam_kerjas')->onDelete('cascade');
-            $table->foreign('id_lokasi')->references('id')->on('lokasis')->onDelete('cascade');
+            $table->foreignId('pengajuan_id')->constrained('pengajuans', 'id')->onDelete('cascade');
+            $table->foreignId('jam_kerja_id')->constrained('jam_kerjas', 'id')->onDelete('cascade');
+            $table->foreignId('lokasi_id')->constrained('lokasis', 'id')->onDelete('cascade');
             $table->string('nomor_surat',20)->unique()->nullable();
             // $table->date('tanggal');
             // $table->time('jam');
@@ -27,7 +24,7 @@ return new class extends Migration
             $table->string('nama_kegiatan',100);
             $table->string('nama_PJ',50);
             $table->string('jabatan_PJ',30);
-            $table->string('ttd_PJ',255)->nullable();
+            $table->string('ttd_PJ',255);
             $table->string('narahubung',50);
             $table->string('qr_validasi',255)->nullable();
             $table->timestamps();

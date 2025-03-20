@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('keterlambatans', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_kehadiran');
-            $table->foreign('id_kehadiran')->references('id')->on('kehadirans')->onDelete('cascade');
+            $table->foreignId('kehadiran_id')->constrained('kehadirans', 'id')->onDelete('cascade');
             $table->string('keterangan');
             $table->string('foto',255)->nullable();
             $table->timestamps();

@@ -26,7 +26,14 @@ use App\Models\JamKerja;
 use App\Models\Lokasi;
 use Dotswan\MapPicker\Fields\Map;
 use Filament\Forms\Set;
+use Filament\Forms\Components\Livewire;
+// use App\Livewire\CameraCapture;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use App\Forms\Components\CameraCapture;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\DateTimePicker;
+use Illuminate\Support\Facades\Auth;
+use Torgodly\Html2Media\Tables\Actions\Html2MediaAction;
 
 class KehadiranResource extends Resource
 {
@@ -40,9 +47,9 @@ class KehadiranResource extends Resource
             ->schema([
                 // Select::make('id_user')
                 //     ->relationship('users', 'name'),
-                // Select::make('id_penjadwalan')
-                Hidden::make('id_user'),
-                Hidden::make('id_penjadwalan')
+                // Select::make('penjadwalan_id')
+                Hidden::make('user_id'),
+                Hidden::make('penjadwalan_id')
                     // // ->relationship('penjadwalan', 'id')
                     // ->options(function () {
                     //     $penjadwalan = Penjadwalan::whereHas('surat.jamkerja', function ($query) {
@@ -94,8 +101,8 @@ class KehadiranResource extends Resource
                             $livewire->dispatch('refreshMap');    
                         }
                         if($jamkerja){
-                            $set('jadwal_waktu_mulai', "{$jamkerja->tgl} {$jamkerja->jam_mulai}");
-                            $set('jadwal_waktu_selesai', "{$jamkerja->tgl} {$jamkerja->jam_akhir}");
+                            $set('jadwal_waktu_mulai', "{$jamkerja->jam_mulai}");
+                            $set('jadwal_waktu_selesai', "{$jamkerja->jam_akhir}");
                         }
                     }),
                     Hidden::make('jadwal_lokasi_peta_latitude')
@@ -148,6 +155,8 @@ class KehadiranResource extends Resource
                     }),
                     DateTimePicker::make('jadwal_waktu_mulai')->disabled(),
                     DateTimePicker::make('jadwal_waktu_selesai')->disabled(),
+                    
+                    
                     Select::make('Presensi')
                     ->dehydrated(false)
                     ->options([
@@ -204,7 +213,25 @@ class KehadiranResource extends Resource
                                 time() < strtotime($get('jadwal_waktu_mulai')) - 3600;
                             }),
                         ]),
-                        TextInput::make('waktu_mulai_status')->readonly()
+                        TextInput::make('waktu_mulai_status')->readonly(),
+                        Hidden::make('photo_path')
+                    ->reactive()->afterStateHydrated(function (Forms\Components\Hidden $component, $state) {
+                        // Ensure we have a state in the component
+                        $component->state($state);
+                    })
+                    ->dehydrated(true)
+                    ->reactive(),
+                    
+                    Section::make('Camera Capture')
+                    ->schema([
+                        CameraCapture::make('camera')
+                            ->columnSpan(2)
+                            ->extraAttributes([
+                                'class' => 'camera-capture-container',
+                                'data-input-target' => 'photo_path',
+                            ]),
+                    ])
+                    ->collapsible(),
                     ])->hidden(fn (callable $get) => $get('Presensi') !== 'awal'),
                     Section::make('Akhir')->schema([
                         DateTimePicker::make('waktu_selesai')->readonly(),
@@ -273,8 +300,25 @@ class KehadiranResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
-                ->hidden(fn($record) => $record->waktu_selesai_status !== null),
+                Tables\Actions\EditAction::make()->label('Presensi')
+                // ->hidden(fn($record) => $record->waktu_selesai_status !== null)
+                // ->hidden(fn () => !Auth::user()->hasRole('Petugas'))
+                ->hidden(fn ($record) => $record->waktu_selesai_status !== null || !Auth::user()->hasRole('Petugas')),
+                Html2MediaAction::make('print')
+                    ->icon('heroicon-o-printer')
+                    ->openUrlInNewTab()
+                    ->scale(2)
+                    ->print() // Enable print option
+                    ->preview() // Enable preview option
+                    ->filename('kehadiran') // Custom file name
+                    ->savePdf() // Enable save as PDF option
+                    ->requiresConfirmation() // Show confirmation modal
+                    ->pagebreak('section', ['css', 'legacy'])
+                    ->orientation('portrait') // Portrait orientation
+                    ->format('a4', 'mm') // A4 format with mm units
+                    ->enableLinks() // Enable links in PDF
+                    ->margin([10, 10, 10, 10]) // Set custom margins
+                    ->content(fn($record) => view('reusable.laporan_kehadiran.laporan_kehadiran', ['surat' => $record->penjadwalan->surat ?? null,])),
                 Tables\Actions\Action::make('Izin')
                     ->form([
                         Select::make('Izin_Presensi')

@@ -5,6 +5,7 @@ namespace App\Filament\Resources\KeterlambatanResource\Pages;
 use App\Filament\Resources\KeterlambatanResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Support\Facades\Auth;
 
 class ListKeterlambatans extends ListRecords
 {
@@ -13,7 +14,7 @@ class ListKeterlambatans extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()->hidden(fn () => !Auth::user()->hasRole('Petugas')),
         ];
     }
 }

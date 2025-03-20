@@ -18,6 +18,13 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
+use App\Filament\Resources\SuratResource;
+use App\Filament\Resources\KehadiranResource;
+use App\Filament\Resources\PenilaianPegawaiResource;
+use App\Filament\Resources\KeterlambatanResource;
+use App\Filament\Resources\BookRequestResource;
+use App\Filament\Resources\PopularitasResource;
+
 class SekdinPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -29,12 +36,20 @@ class SekdinPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->resources([
+                SuratResource::class,
+                KehadiranResource::class,
+                PenilaianPegawaiResource::class,
+                KeterlambatanResource::class,
+                BookRequestResource::class,
+                PopularitasResource::class,
+            ])
+            // ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
+            // ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Pages\Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Sekdin/Widgets'), for: 'App\\Filament\\Sekdin\\Widgets')
+            // ->discoverWidgets(in: app_path('Filament/Sekdin/Widgets'), for: 'App\\Filament\\Sekdin\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,

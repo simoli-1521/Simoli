@@ -15,8 +15,8 @@ class CreatePenjadwalan extends CreateRecord
     {
         // Runs after the form fields are saved to the database.
         Kehadiran::create([
-            'id_user'=> $this->record->id_user,
-            'id_penjadwalan'=> $this->record->id,
+            'user_id'=> $this->record->user_id,
+            'penjadwalan_id'=> $this->record->id,
         ]);
     }
 }

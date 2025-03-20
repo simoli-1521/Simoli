@@ -5,6 +5,7 @@ namespace App\Filament\Resources\ReimburseResource\Pages;
 use App\Filament\Resources\ReimburseResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Support\Facades\Auth;
 
 class ListReimburses extends ListRecords
 {
@@ -13,7 +14,7 @@ class ListReimburses extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()->hidden(fn () => !Auth::user()->hasRole('Petugas')),
         ];
     }
 }

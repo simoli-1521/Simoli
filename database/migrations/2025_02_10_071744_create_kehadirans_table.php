@@ -13,10 +13,8 @@ return new class extends Migration
     {
         Schema::create('kehadirans', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_user');
-            $table->unsignedBigInteger('id_penjadwalan');
-            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('id_penjadwalan')->references('id')->on('penjadwalans')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users', 'id')->onDelete('cascade');
+            $table->foreignId('penjadwalan_id')->constrained('penjadwalans', 'id')->onDelete('cascade');
             // $table->float('jadwal_lokasi_peta_latitude');
             // $table->float('jadwal_lokasi_peta_longtitude');
             // $table->timestamp('jadwal_waktu_mulai')->nullable();

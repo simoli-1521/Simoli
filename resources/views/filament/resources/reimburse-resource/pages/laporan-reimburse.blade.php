@@ -20,10 +20,10 @@
     <div class="mt-6 space-y-1">
         <div class="flex">
             <span class="w-40">Nama Pemohon</span> 
-            <span>: {{ $reimburse->id_user }}</span>
+            <span>: {{ $reimburse->users->name }}</span>
         </div>
         <div class="flex">
-            <span class="w-40">Jenis_reimburse</span> 
+            <span class="w-40">Jenis Reimburse</span> 
             <span>: {{ $reimburse->jenis_reimburse }}</span>
         </div>
         <div class="flex">

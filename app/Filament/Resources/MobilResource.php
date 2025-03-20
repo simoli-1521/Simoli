@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
 
 
 class MobilResource extends Resource
@@ -32,6 +33,10 @@ class MobilResource extends Resource
                 TextInput::make('tipe'),
                 TextInput::make('thn_pembuatan'),
                 TextInput::make('warna'),
+                Select::make('books') // Use the relationship method
+                ->relationship('books', 'judul') 
+                ->label('Books')
+                ->multiple(),
             ]);
     }
 
@@ -45,12 +50,16 @@ class MobilResource extends Resource
                 TextColumn::make('tipe'),
                 TextColumn::make('thn_pembuatan'),
                 TextColumn::make('warna'),
+                TextColumn::make('bookTitles') // Add this line
+                ->label('Books Assigned')
+                ->getStateUsing(fn (Mobil $record) => $record->bookTitles),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

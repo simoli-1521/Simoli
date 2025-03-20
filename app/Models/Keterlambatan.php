@@ -10,11 +10,11 @@ class Keterlambatan extends Model
 
     public function users()
     {
-        return $this->belongsTo(User::class, 'id_user');
+        return $this->belongsTo(User::class, 'user_id');
     }
     
     public function kehadiran()
     {
-        return $this->belongsTo(Kehadiran::class, 'id_kehadiran');
+        return $this->belongsTo(Kehadiran::class, 'kehadiran_id');
     }
 }

@@ -21,9 +21,10 @@ class EditPenjadwalan extends EditRecord
     protected function afterSave(): void
     {
         // Runs after the form fields are saved to the database.
-        Kehadiran::updateOrCreate([
-            'id_user'=> $this->record->id_user,
-            'id_penjadwalan'=> $this->record->id,
+        Kehadiran::updateOrCreate(
+            ['id' => $this->record->id],[
+            'user_id'=> $this->record->user_id,
+            'penjadwalan_id'=> $this->record->id,
         ],
         [
             'updated_at' => now(), // Update timestamp or other fields if needed

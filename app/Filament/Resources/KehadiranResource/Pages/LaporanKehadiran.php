@@ -27,13 +27,15 @@ class LaporanKehadiran extends Page
         
         // $this->jamkerja = $surat->penjadwalan->surat->jamkerja ?? null;
         // $this->lokasi = $surat->penjadwalan->surat->lokasi ?? null;
-        $findkehadiran = Kehadiran::find($record)?->id_penjadwalan;
-        $findpenjadwalan = Penjadwalan::find($findkehadiran)?->id_surat;
-        $findsurat = Surat::find($findpenjadwalan)?->id_lokasi;
-        $this->surat = Surat::find($findpenjadwalan);
-        $this->findlokasi = Lokasi::find($findsurat);
-        $this->findjamkerja = JamKerja::find($findsurat);
-        $this->record = Kehadiran::findOrFail($record);
+        $this->record = Kehadiran::with([
+            'penjadwalan.surat.lokasi',
+            'penjadwalan.surat.jamkerja'
+        ])->findOrFail($record);
+    
+        $this->surat = $this->record->penjadwalan->surat ?? null;
+        $this->findlokasi = $this->surat->lokasi ?? null;
+        $this->findjamkerja = $this->surat->jamkerja ?? null;
+        // $this->record = Kehadiran::findOrFail($record);
 
     }
 

@@ -18,6 +18,7 @@ use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Support\Facades\Auth;
 
 class KeterlambatanResource extends Resource
 {
@@ -29,7 +30,7 @@ class KeterlambatanResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('id_kehadiran')
+                Select::make('kehadiran_id')
                     ->relationship('kehadiran', 'waktu_mulai', fn ($query) => $query->where('waktu_mulai_status', 'Telat')
                     ->orWhere('waktu_selesai_status', 'Telat')),
                 RichEditor::make('keterangan')
@@ -51,7 +52,7 @@ class KeterlambatanResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
+        return $table->recordUrl(null)
             ->columns([
                 
                 TextColumn::make('kehadiran.penjadwalan.surat.nama_kegiatan')->label('Nama Kegiatan'),
@@ -62,7 +63,7 @@ class KeterlambatanResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->hidden(fn () => !Auth::user()->hasRole('Petugas')),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -16,4 +16,11 @@ class ListUsers extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+    protected function getFooterWidgets(): array
+    {
+        return [
+            UserResource\Widgets\UserWidget::class,
+            UserResource\Widgets\UserChartWidget::class,
+        ];
+    }
 }

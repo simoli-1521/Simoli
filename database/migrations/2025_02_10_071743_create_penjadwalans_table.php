@@ -13,12 +13,9 @@ return new class extends Migration
     {
         Schema::create('penjadwalans', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_user');
-            $table->unsignedBigInteger('id_surat');
-            $table->unsignedBigInteger('id_mobil');
-            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('id_surat')->references('id')->on('surats')->onDelete('cascade');
-            $table->foreign('id_mobil')->references('id')->on('mobils')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users', 'id')->onDelete('cascade');
+            $table->foreignId('surat_id')->constrained('surats', 'id')->onDelete('cascade');
+            $table->foreignId('mobil_id')->constrained('mobils', 'id')->onDelete('cascade');
             $table->timestamps();
         });
     }

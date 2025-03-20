@@ -36,7 +36,7 @@ class ReimburseResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('id_user')
+                Select::make('user_id')
                     ->relationship('users', 'name'),
                 // Select::make('id_bbm')
                 //     ->relationship('bbm', 'tgl_pengisian'),
@@ -147,7 +147,7 @@ class ReimburseResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
+        return $table->recordUrl(null)
             ->columns([
                 TextColumn::make('users.name'),
                 TextColumn::make('jenis_reimburse'),
@@ -169,7 +169,7 @@ class ReimburseResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->hidden(fn () => !Auth::user()->hasAnyRole(['Bagian Keuangan', 'Petugas'])),
                 Tables\Actions\Action::make('Laporan')
                     ->url(fn($record)=>self::getUrl("laporan", ['record' => $record->id]))
                     ->hidden(fn($record) => $record->status !== "diterima"),

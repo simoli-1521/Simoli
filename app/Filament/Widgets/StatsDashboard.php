@@ -8,12 +8,12 @@ use App\Models\Mobil;
 
 class StatsDashboard extends BaseWidget
 {
-    protected function getStats(): array
-    {
-        $countMobil = Mobil::count();
-        return [
-            Stat::make('Jumlah Mobil', $countMobil),
-        ];
-        return[];
-    }
+    // protected function getStats(): array
+    // {
+        // $countMobil = Mobil::count();
+        // return [
+        //     Stat::make('Jumlah Mobil', $countMobil),
+        // ];
+        // return[];
+    // }
 }
