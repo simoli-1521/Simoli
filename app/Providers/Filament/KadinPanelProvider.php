@@ -35,6 +35,10 @@ class KadinPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
+            ->maxContentWidth('full')
+            ->sidebarWidth('auto')
+            ->sidebarCollapsibleOnDesktop(true)
+            ->brandLogo(asset('storage/img/logo_smg.png'))
             ->id('kadin')
             ->path('kadin')
             ->login()
