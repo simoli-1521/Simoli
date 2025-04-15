@@ -29,7 +29,9 @@ use Filament\Forms\Set;
 use Filament\Forms\Components\Livewire;
 // use App\Livewire\CameraCapture;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use App\Forms\Components\CameraCapture;
+// use App\Forms\Components\CameraCapture;
+use App\Forms\Components\KameraAwal;
+use App\Forms\Components\KameraAkhir;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\DateTimePicker;
 use Illuminate\Support\Facades\Auth;
@@ -116,7 +118,7 @@ class KehadiranResource extends Resource
                         // ->disabled(),
                     Map::make('jadwal_lokasi_peta')
                         ->disabled()    
-                        ->columnSpanFull()
+                        // ->columnSpanFull()   
                         ->defaultLocation(latitude: -7.0530, longitude: 110.4092)
                         ->draggable(false)
                         ->showMarker(true)
@@ -142,7 +144,7 @@ class KehadiranResource extends Resource
                     // ->hidden(), 
                 Map::make('lokasi_peta')
                     ->disabled()
-                    ->columnSpanFull()
+                    // ->columnSpanFull()
                     ->defaultLocation(latitude: -7.0530, longitude: 110.4092)
                     ->showMarker(true)
                     ->showMyLocationButton()
@@ -157,14 +159,14 @@ class KehadiranResource extends Resource
                     DateTimePicker::make('jadwal_waktu_selesai')->disabled(),
                     
                     
-                    Select::make('Presensi')
-                    ->dehydrated(false)
-                    ->options([
-                        'awal' => 'Awal',
-                        'akhir' => 'Akhir',
-                    ])
-                ->reactive(),
-                    Section::make('Awal')->schema([
+                //     Select::make('Presensi')
+                //     ->dehydrated(false)
+                //     ->options([
+                //         'awal' => 'Awal',
+                //         'akhir' => 'Akhir',
+                //     ])
+                // ->reactive(),
+                    Section::make('Presensi Awal')->schema([
                         DateTimePicker::make('waktu_mulai')->readonly(),
                         Actions::make([
                             Action::make('Set_Current_DateTime')
@@ -212,28 +214,21 @@ class KehadiranResource extends Resource
                                 return 
                                 time() < strtotime($get('jadwal_waktu_mulai')) - 3600;
                             }),
-                        ]),
-                        TextInput::make('waktu_mulai_status')->readonly(),
-                        Hidden::make('photo_path')
-                    ->reactive()->afterStateHydrated(function (Forms\Components\Hidden $component, $state) {
-                        // Ensure we have a state in the component
-                        $component->state($state);
-                    })
-                    ->dehydrated(true)
-                    ->reactive(),
-                    
-                    Section::make('Camera Capture')
-                    ->schema([
-                        CameraCapture::make('camera')
-                            ->columnSpan(2)
-                            ->extraAttributes([
-                                'class' => 'camera-capture-container',
-                                'data-input-target' => 'photo_path',
-                            ]),
+                        ])->columnSpan(2),
+                        TextInput::make('waktu_mulai_status')
+                        ->required()    
+                        ->readonly(),
+                        TextInput::make('foto_kehadiran_awal')
+                        ->afterStateHydrated(function ($state, callable $set, $livewire) {})
+                        ->reactive()
+                        ->required(),
+                    KameraAwal::make('camera')
+                        ->columnSpan(2)
+                        ,
                     ])
-                    ->collapsible(),
-                    ])->hidden(fn (callable $get) => $get('Presensi') !== 'awal'),
-                    Section::make('Akhir')->schema([
+                    // ->hidden(fn (callable $get) => $get('Presensi') !== 'awal')
+                    ->hidden(fn ($record) => $record->waktu_mulai_status !== null),
+                    Section::make('Presensi Akhir')->schema([
                         DateTimePicker::make('waktu_selesai')->readonly(),
                         Actions::make([
                             Action::make('Set_Current_DateTime')
@@ -280,8 +275,17 @@ class KehadiranResource extends Resource
                                 }
                                 return time() < strtotime($get('jadwal_waktu_selesai'));} ),
                             ]),
-                            TextInput::make('waktu_selesai_status')->readonly()
-                    ])->hidden(fn (callable $get) => $get('Presensi') !== 'akhir'),
+                            TextInput::make('waktu_selesai_status')->readonly(),
+                            TextInput::make('foto_kehadiran_akhir')
+                            ->afterStateHydrated(function ($state, callable $set, $livewire) {})
+                            ->reactive()
+                            ->required(),
+                        KameraAkhir::make('camera')
+                            ->columnSpan(2)
+                            ,
+                            ])
+                    // ->hidden(fn (callable $get) => $get('Presensi') !== 'akhir')
+                    ->hidden(fn ($record) => $record->waktu_mulai_status === null),
             ]);
     }
 

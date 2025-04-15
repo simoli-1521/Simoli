@@ -24,6 +24,6 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Livewire::component('isbn-scanner', IsbnScanner::class);
-        Livewire::component('camera-capture', CameraCapture::class);
+        // Livewire::component('camera-capture', CameraCapture::class);
     }
 }

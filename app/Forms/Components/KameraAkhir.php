@@ -4,9 +4,9 @@ namespace App\Forms\Components;
 
 use Filament\Forms\Components\Field;
 
-class CameraCapture extends Field
+class KameraAkhir extends Field
 {
-    protected string $view = 'forms.components.camera-capture';
+    protected string $view = 'forms.components.kamera-akhir';
 
     protected function setUp(): void
     {

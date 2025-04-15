@@ -7,7 +7,7 @@ use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-class CameraCapture extends Component
+class KameraAkhir extends Component
 {
     use WithFileUploads;
 
@@ -80,6 +80,6 @@ class CameraCapture extends Component
 
     public function render()
     {
-        return view('livewire.camera-capture');
+        return view('livewire.kamera-akhir');
     }
 }

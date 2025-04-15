@@ -1,5 +1,5 @@
-<!-- resources/views/livewire/camera-capture.blade.php -->
-<div class="camera-capture-wrapper">
+<!-- resources/views/livewire/kamera-akhir.blade.php -->
+<div class="kamera-akhir-wrapper">
     <!-- Hidden input that will be updated with the photo path -->
     <input type="hidden" wire:model="photoPath" id="photo-path-input">
     
