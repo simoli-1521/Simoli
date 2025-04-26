@@ -9,7 +9,7 @@
             <button 
                 type="button"
                 wire:click="toggleCamera"
-                class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="px-4 py-2 text-sm font-medium bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
                 {{ $cameraActive ? 'Close Camera' : 'Open Camera' }}
             </button>
@@ -18,7 +18,7 @@
                 <button 
                     type="button"
                     wire:click="toggleFlash"
-                    class="px-4 py-2 text-sm font-medium text-white {{ $flashActive ? 'bg-yellow-500' : 'bg-gray-600' }} rounded-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                    class="px-4 py-2 text-sm font-medium {{ $flashActive ? 'bg-yellow-500' : 'bg-gray-600' }} rounded-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500"
                 >
                     {{ $flashActive ? 'Flash On' : 'Flash Off' }}
                 </button>
@@ -28,7 +28,7 @@
                 <button 
                     type="button"
                     wire:click="retakePhoto"
-                    class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    class="px-4 py-2 text-sm font-medium bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                     Retake Photo
                 </button>
@@ -36,7 +36,7 @@
                 <button 
                     type="button"
                     wire:click="savePhoto"
-                    class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                    class="px-4 py-2 text-sm font-medium bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
                 >
                     Save Photo
                 </button>
@@ -62,7 +62,7 @@
             <button 
                 type="button"
                 id="capture-btn"
-                class="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-full hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                class="px-4 py-4 text-sm font-medium bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
             >
                 Capture
             </button>

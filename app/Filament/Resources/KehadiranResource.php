@@ -168,60 +168,59 @@ class KehadiranResource extends Resource
                 // ->reactive(),
                     Section::make('Presensi Awal')->schema([
                         DateTimePicker::make('waktu_mulai')->readonly(),
-                        Actions::make([
-                            Action::make('Set_Current_DateTime')
-                            ->label('Set Now')
-                            ->action(function ($record, callable $set, callable $get) {
-                                $attendanceLat = $get('jadwal_lokasi_peta_latitude');
-                                $attendanceLng = $get('jadwal_lokasi_peta_longtitude');
-                                $userLat = $get('lokasi_peta_latitude');
-                                $userLng = $get('lokasi_peta_longtitude');
-                                $radius = $get('jadwal_lokasi_peta_radius');
-                                if (time() < strtotime($get('jadwal_waktu_mulai')) - 3600) {
-                                    return; // Button should be disabled already
-                                }
-                                if (time() >= strtotime($get('jadwal_waktu_mulai'))) {
-                                    if(self::haversineDistance(
-                                        $attendanceLat, $attendanceLng,
-                                        $userLat, $userLng, $radius)){
-                                            $set('waktu_mulai', now()->format('Y-m-d H:i:s'));
-                                            $set('waktu_mulai_status', "Telat");
-                                    } else {
-                                        Notification::make()
-                                        ->title('You are outside the attendance area!')
-                                        ->danger()
-                                        ->send();
-                                    }
-                                } else {
-                                    if(self::haversineDistance(
-                                        $attendanceLat, $attendanceLng,
-                                        $userLat, $userLng, $radius)){
-                                            $set('waktu_mulai', now()->format('Y-m-d H:i:s'));
-                                            $set('waktu_mulai_status', "Hadir");
-                                    }else{
-                                        Notification::make()
-                                        ->title('You are outside the attendance area!')
-                                        ->danger()
-                                        ->send();               
-                                    }
-                                }
-                            }) 
-                            ->icon('heroicon-o-clock')
-                            ->disabled(function (callable $get) {
-                                if ($get('jadwal_waktu_mulai')  === null) {
-                                    return true; // Disable button if target time is not set
-                                }
-                                return 
-                                time() < strtotime($get('jadwal_waktu_mulai')) - 3600;
-                            }),
-                        ])->columnSpan(2),
+                        // Actions::make([
+                        //     Action::make('Set_Current_DateTime')
+                        //     ->label('Set Now')
+                        //     ->action(function ($record, callable $set, callable $get) {
+                        //         $attendanceLat = $get('jadwal_lokasi_peta_latitude');
+                        //         $attendanceLng = $get('jadwal_lokasi_peta_longtitude');
+                        //         $userLat = $get('lokasi_peta_latitude');
+                        //         $userLng = $get('lokasi_peta_longtitude');
+                        //         $radius = $get('jadwal_lokasi_peta_radius');
+                        //         if (time() < strtotime($get('jadwal_waktu_mulai')) - 3600) {
+                        //             return; // Button should be disabled already
+                        //         }
+                        //         if (time() >= strtotime($get('jadwal_waktu_mulai'))) {
+                        //             if(self::haversineDistance(
+                        //                 $attendanceLat, $attendanceLng,
+                        //                 $userLat, $userLng, $radius)){
+                        //                     $set('waktu_mulai', now()->format('Y-m-d H:i:s'));
+                        //                     $set('waktu_mulai_status', "Telat");
+                        //             } else {
+                        //                 Notification::make()
+                        //                 ->title('You are outside the attendance area!')
+                        //                 ->danger()
+                        //                 ->send();
+                        //             }
+                        //         } else {
+                        //             if(self::haversineDistance(
+                        //                 $attendanceLat, $attendanceLng,
+                        //                 $userLat, $userLng, $radius)){
+                        //                     $set('waktu_mulai', now()->format('Y-m-d H:i:s'));
+                        //                     $set('waktu_mulai_status', "Hadir");
+                        //             }else{
+                        //                 Notification::make()
+                        //                 ->title('You are outside the attendance area!')
+                        //                 ->danger()
+                        //                 ->send();               
+                        //             }
+                        //         }
+                        //     }) 
+                        //     ->icon('heroicon-o-clock')
+                        //     ->disabled(function (callable $get) {
+                        //         if ($get('jadwal_waktu_mulai')  === null) {
+                        //             return true; // Disable button if target time is not set
+                        //         }
+                        //         return 
+                        //         time() < strtotime($get('jadwal_waktu_mulai')) - 3600;
+                        //     }),
+                        // ])->columnSpan(2),
                         TextInput::make('waktu_mulai_status')
-                        ->required()    
                         ->readonly(),
-                        TextInput::make('foto_kehadiran_awal')
+                        Hidden::make('foto_kehadiran_awal')
                         ->afterStateHydrated(function ($state, callable $set, $livewire) {})
-                        ->reactive()
-                        ->required(),
+                        ->reactive(),
+                        // ->required(),
                     KameraAwal::make('camera')
                         ->columnSpan(2)
                         ,
@@ -230,62 +229,62 @@ class KehadiranResource extends Resource
                     ->hidden(fn ($record) => $record->waktu_mulai_status !== null),
                     Section::make('Presensi Akhir')->schema([
                         DateTimePicker::make('waktu_selesai')->readonly(),
-                        Actions::make([
-                            Action::make('Set_Current_DateTime')
-                            ->label('Set Now')
-                            ->action(function ($record, callable $set, callable $get) {
-                                $attendanceLat = $get('jadwal_lokasi_peta_latitude');
-                                $attendanceLng = $get('jadwal_lokasi_peta_longtitude');
-                                $userLat = $get('lokasi_peta_latitude');
-                                $userLng = $get('lokasi_peta_longtitude');
-                                $radius = $get('jadwal_lokasi_peta_radius');
-                                if (time() < strtotime($get('jadwal_waktu_selesai'))) {
-                                    return; // Button should be disabled already
-                                }
-                                if (time() > strtotime($get('jadwal_waktu_selesai')) + 3600) {
-                                    if(self::haversineDistance(
-                                        $attendanceLat, $attendanceLng,
-                                        $userLat, $userLng, $radius)){
-                                            $set('waktu_selesai', now()->format('Y-m-d H:i:s'));
-                                            $set('waktu_selesai_status', "Telat");
-                                    } else {
-                                        Notification::make()
-                                        ->title('You are outside the attendance area!')
-                                        ->danger()
-                                        ->send();
-                                    }
-                                } else {
-                                    if(self::haversineDistance(
-                                        $attendanceLat, $attendanceLng,
-                                        $userLat, $userLng, $radius)){
-                                            $set('waktu_selesai', now()->format('Y-m-d H:i:s'));
-                                            $set('waktu_selesai_status', "Hadir");
-                                    }else{
-                                        Notification::make()
-                                        ->title('You are outside the attendance area!')
-                                        ->danger()
-                                        ->send();               
-                                    }
-                                }
-                            })
-                            ->icon('heroicon-o-clock')
-                            ->disabled(function (callable $get) {
-                                if ($get('jadwal_waktu_selesai')  === null) {
-                                    return true;
-                                }
-                                return time() < strtotime($get('jadwal_waktu_selesai'));} ),
-                            ]),
+                        // Actions::make([
+                        //     Action::make('Set_Current_DateTime')
+                        //     ->label('Set Now')
+                        //     ->action(function ($record, callable $set, callable $get) {
+                        //         $attendanceLat = $get('jadwal_lokasi_peta_latitude');
+                        //         $attendanceLng = $get('jadwal_lokasi_peta_longtitude');
+                        //         $userLat = $get('lokasi_peta_latitude');
+                        //         $userLng = $get('lokasi_peta_longtitude');
+                        //         $radius = $get('jadwal_lokasi_peta_radius');
+                        //         if (time() < strtotime($get('jadwal_waktu_selesai'))) {
+                        //             return; // Button should be disabled already
+                        //         }
+                        //         if (time() > strtotime($get('jadwal_waktu_selesai')) + 3600) {
+                        //             if(self::haversineDistance(
+                        //                 $attendanceLat, $attendanceLng,
+                        //                 $userLat, $userLng, $radius)){
+                        //                     $set('waktu_selesai', now()->format('Y-m-d H:i:s'));
+                        //                     $set('waktu_selesai_status', "Telat");
+                        //             } else {
+                        //                 Notification::make()
+                        //                 ->title('You are outside the attendance area!')
+                        //                 ->danger()
+                        //                 ->send();
+                        //             }
+                        //         } else {
+                        //             if(self::haversineDistance(
+                        //                 $attendanceLat, $attendanceLng,
+                        //                 $userLat, $userLng, $radius)){
+                        //                     $set('waktu_selesai', now()->format('Y-m-d H:i:s'));
+                        //                     $set('waktu_selesai_status', "Hadir");
+                        //             }else{
+                        //                 Notification::make()
+                        //                 ->title('You are outside the attendance area!')
+                        //                 ->danger()
+                        //                 ->send();               
+                        //             }
+                        //         }
+                        //     })
+                        //     ->icon('heroicon-o-clock')
+                        //     ->disabled(function (callable $get) {
+                        //         if ($get('jadwal_waktu_selesai')  === null) {
+                        //             return true;
+                        //         }
+                        //         return time() < strtotime($get('jadwal_waktu_selesai'));} ),
+                        //     ]),
                             TextInput::make('waktu_selesai_status')->readonly(),
                             TextInput::make('foto_kehadiran_akhir')
                             ->afterStateHydrated(function ($state, callable $set, $livewire) {})
-                            ->reactive()
-                            ->required(),
+                            ->reactive(),
+                            // ->required(),
                         KameraAkhir::make('camera')
                             ->columnSpan(2)
                             ,
                             ])
                     // ->hidden(fn (callable $get) => $get('Presensi') !== 'akhir')
-                    ->hidden(fn ($record) => $record->waktu_mulai_status === null),
+                    ->hidden(fn ($record) => $record->waktu_mulai_status === null || $record->waktu_selesai_status !== null),
             ]);
     }
 
