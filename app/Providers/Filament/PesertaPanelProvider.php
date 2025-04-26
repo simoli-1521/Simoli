@@ -17,6 +17,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use App\Filament\Auth\CustomRegister;
 
 use App\Filament\Resources\PenilaianPegawaiResource;
 use App\Filament\Resources\BookRequestResource;
@@ -33,6 +34,7 @@ class PesertaPanelProvider extends PanelProvider
             ->id('peserta')
             ->path('peserta')
             ->login()
+            ->registration(CustomRegister::class)
             ->colors([
                 'primary' => Color::Amber,
             ])
