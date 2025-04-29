@@ -27,12 +27,12 @@ class MobilResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('nama'),
-                TextInput::make('nopol'),
-                TextInput::make('merk'),
-                TextInput::make('tipe'),
-                TextInput::make('thn_pembuatan'),
-                TextInput::make('warna'),
+                TextInput::make('nama')->required(),
+                TextInput::make('nopol')->required(),
+                TextInput::make('merk')->required(),
+                TextInput::make('tipe')->required(),
+                TextInput::make('thn_pembuatan')->required(),
+                TextInput::make('warna')->required(),
                 Select::make('books') // Use the relationship method
                 ->relationship('books', 'judul') 
                 ->label('Books')
