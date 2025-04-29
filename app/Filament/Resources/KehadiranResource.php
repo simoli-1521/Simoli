@@ -30,6 +30,7 @@ use Filament\Forms\Components\Livewire;
 // use App\Livewire\CameraCapture;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 // use App\Forms\Components\CameraCapture;
+use App\Models\Izin;
 use App\Forms\Components\KameraAwal;
 use App\Forms\Components\KameraAkhir;
 use Filament\Forms\Components\FileUpload;
@@ -326,18 +327,81 @@ class KehadiranResource extends Resource
                     ->form([
                         Select::make('Izin_Presensi')
                         ->options([
-                            'sakit' => 'Sakit',
-                            'ijin' => 'Ijin',
+                            'Sakit' => 'Sakit',
+                            'Ijin' => 'Ijin',
                         ])
                     ])->action(function ($record, $data) {
+                        $izin = Izin::Create([
+                                'alasan' => $data['Izin_Presensi'],
+                                'waktu_izin' => now()->format('Y-m-d H:i:s'),
+                            ]
+                            // 'waktu_mulai' => now()->format('Y-m-d H:i:s'),
+                            // 'waktu_selesai' => now()->format('Y-m-d H:i:s'),
+                            // 'waktu_mulai_status' => $data['Izin_Presensi'],
+                            // 'waktu_selesai_status' => $data['Izin_Presensi'],
+                        );
                         $record->update([
-                            'waktu_mulai' => now()->format('Y-m-d H:i:s'),
-                            'waktu_selesai' => now()->format('Y-m-d H:i:s'),
-                            'waktu_mulai_status' => $data['Izin_Presensi'],
-                            'waktu_selesai_status' => $data['Izin_Presensi'],
+                            'izin_id' => $izin->id,
                         ]);
-                    })->hidden(fn($record) => $record->waktu_selesai_status !== null),
-                    Tables\Actions\Action::make('Laporan')
+                    })->hidden(fn($record) => $record->waktu_selesai_status !== null || !Auth::user()->hasRole('Petugas')),
+                    Tables\Actions\Action::make('Pengajuan izin Admin')
+                    ->form(fn ($record) =>[
+                        Select::make('status')
+                        ->reactive()
+                        ->options([
+                            'Diterima Admin' => 'Diterima',
+                            'Ditolak Admin' => 'Ditolak',
+                        ])->default(optional($record->izin)->status_admin),
+                    ])
+                    ->action(function ($record, $data) {
+                        Izin::updateOrCreate(
+                            ['id' => $record->izin_id],
+                            [
+                            'status_admin'=> $data['status'],
+                        ]);
+                    })->hidden(fn ($record) => !Auth::user()->hasRole('Admin') || optional($record->izin)->alasan === null),
+                Tables\Actions\Action::make('Pengajuan Izin Sekdin')
+                    ->form(fn ($record) =>[
+                        Select::make('status')
+                        ->reactive()
+                        ->options([
+                            'Diterima Sekdin' => 'Diterima',
+                            'Ditolak Sekdin' => 'Ditolak',
+                        ])->default(optional($record->izin)->status_sekdin),
+                    ])
+                    ->action(function ($record, $data) {
+                        Izin::updateOrCreate(
+                            ['id' => $record->izin_id],
+                            [
+                            'status_sekdin'=> $data['status'],
+                        ]);
+                    })->hidden(fn ($record) => !Auth::user()->hasRole('Sekretaris Dinas') || optional($record->izin)->status_admin !== 'Diterima Admin'),
+                Tables\Actions\Action::make('Pengajuan Izin Kadin')
+                    ->form(fn ($record) =>[
+                        Select::make('status')
+                        ->reactive()
+                        ->options([
+                            'Diterima Kadin' => 'Diterima',
+                            'Ditolak Kadin' => 'Ditolak',
+                        ])->default(optional($record->izin)->status_kadin),
+                    ])
+                    ->action(function ($record, $data) {
+                        Izin::updateOrCreate(
+                            ['id' => $record->izin_id],
+                            [
+                            'status_kadin'=> $data['status'],
+                            ]);
+                            if($data['status'] === 'Diterima Kadin'){
+                                $record->update(
+                                    [
+                                    'waktu_mulai' => $record->izin->waktu_izin,
+                                    'waktu_selesai' => $record->izin->waktu_izin,
+                                    'waktu_mulai_status' => $record->izin->alasan,
+                                    'waktu_selesai_status' => $record->izin->alasan,
+                                ]);
+                            }
+                    })->hidden(fn ($record) => !Auth::user()->hasRole('Kepala Dinas') || optional($record->izin)->alasan === null),
+                Tables\Actions\Action::make('Laporan')
                     ->url(fn($record)=>self::getUrl("laporan", ['record' => $record->id]))
                     ->hidden(fn($record) => $record->waktu_selesai_status == null),
             ])
