@@ -25,6 +25,7 @@ use Filament\Pages\Dashboard;
 use App\Filament\Resources\SuratResource;
 use App\Filament\Resources\KehadiranResource;
 use App\Filament\Resources\PenilaianPegawaiResource;
+use App\Filament\Resources\ReimburseResource;
 use App\Filament\Resources\KeterlambatanResource;
 use App\Filament\Resources\BookRequestResource;
 use App\Filament\Resources\PopularitasResource;
@@ -50,6 +51,7 @@ class KadinPanelProvider extends PanelProvider
                 KehadiranResource::class,
                 PenilaianPegawaiResource::class,
                 KeterlambatanResource::class,
+                ReimburseResource::class,
                 BookRequestResource::class,
                 PopularitasResource::class,
             ])
