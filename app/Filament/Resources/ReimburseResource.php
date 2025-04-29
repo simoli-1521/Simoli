@@ -37,7 +37,9 @@ class ReimburseResource extends Resource
         return $form
             ->schema([
                 Select::make('user_id')
-                    ->relationship('users', 'name'),
+                    ->relationship('users', 'name')
+                    ->default(auth()->id())
+                    ->disabled(),
                 // Select::make('id_bbm')
                 //     ->relationship('bbm', 'tgl_pengisian'),
                 // Select::make('id_souvenir')
@@ -152,6 +154,7 @@ class ReimburseResource extends Resource
                 TextColumn::make('users.name'),
                 TextColumn::make('jenis_reimburse'),
                 TextColumn::make('tgl_pengajuan'),
+                TextColumn::make('biaya')->label('Total Biaya'),
                 TextColumn::make('status')
                 ->badge()
                 ->icon(fn ($state): string => match ($state){
@@ -169,10 +172,36 @@ class ReimburseResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make()->hidden(fn () => !Auth::user()->hasAnyRole(['Bagian Keuangan', 'Petugas'])),
+                Tables\Actions\EditAction::make()->hidden(fn () => !Auth::user()->hasAnyRole(['Petugas'])),
+                Tables\Actions\Action::make('Ubah Status')
+                    ->form(fn ($record) =>[
+                        Select::make('status')
+                        ->reactive()
+                        ->options([
+                            'diterima' => 'Diterima',
+                            'ditolak' => 'Ditolak',
+                        ]),
+                        DateTimePicker::make('tgl_diterima')
+                        ->readonly()
+                        ->formatstateusing(fn ($state) => $state ?? now()->format('Y-m-d H:i:s'))
+                        ->hidden(fn (callable $get) => $get('status') !== 'diterima'),
+                        DateTimePicker::make('tgl_ditolak')
+                        ->readonly()
+                        ->formatstateusing(fn ($state) => $state ?? now()->format('Y-m-d H:i:s'))
+                        ->hidden(fn (callable $get) => $get('status') !== 'ditolak'),
+                    ])
+                    ->action(function ($record, $data) {
+                        Reimburse::updateOrCreate(
+                            ['id' => $record->id],
+                            [
+                            'status'=> $data['status'],
+                            'tgl_diterima'=> $data['tgl_diterima']?? null,
+                            'tgl_ditolak'=> $data['tgl_ditolak']?? null,
+                        ]);
+                    })->hidden(fn ($record) => !Auth::user()->hasRole('Bagian Keuangan')),
                 Tables\Actions\Action::make('Laporan')
                     ->url(fn($record)=>self::getUrl("laporan", ['record' => $record->id]))
-                    ->hidden(fn($record) => $record->status !== "diterima"),
+                    // ->hidden(fn($record) => $record->status !== "diterima"),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
