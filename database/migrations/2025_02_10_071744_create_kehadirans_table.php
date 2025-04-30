@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users', 'id')->onDelete('cascade');
             $table->foreignId('penjadwalan_id')->constrained('penjadwalans', 'id')->onDelete('cascade');
-            $table->foreignId('izin_id')->constrained('izins', 'id')->onDelete('cascade');
+            $table->foreignId('izin_id')->constrained('izins', 'id')->onDelete('cascade')->nullable();
             // $table->float('jadwal_lokasi_peta_latitude');
             // $table->float('jadwal_lokasi_peta_longtitude');
             // $table->timestamp('jadwal_waktu_mulai')->nullable();
