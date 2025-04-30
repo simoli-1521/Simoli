@@ -12,7 +12,7 @@ class Izin extends Model
     protected $guarded = [];
     protected $table = 'izins';
 
-    public function surat()
+    public function kehadiran()
     {
         return $this->hasOne(Kehadiran::class, 'izin_id', 'id');
     }
