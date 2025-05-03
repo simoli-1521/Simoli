@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ReimburseResource\Pages;
 use App\Filament\Resources\ReimburseResource\RelationManagers;
 use App\Models\Reimburse;
+use App\Models\PengajuanReimburse;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -39,7 +40,8 @@ class ReimburseResource extends Resource
                 Select::make('user_id')
                     ->relationship('users', 'name')
                     ->default(auth()->id())
-                    ->disabled(),
+                    ->disabled()
+                    ->dehydrated(),
                 // Select::make('id_bbm')
                 //     ->relationship('bbm', 'tgl_pengisian'),
                 // Select::make('id_souvenir')
@@ -178,27 +180,100 @@ class ReimburseResource extends Resource
                         Select::make('status')
                         ->reactive()
                         ->options([
-                            'diterima' => 'Diterima',
-                            'ditolak' => 'Ditolak',
+                            'Diterima Keuangan' => 'Diterima',
+                            'Ditolak Keuangan' => 'Ditolak',
                         ]),
                         DateTimePicker::make('tgl_diterima')
                         ->readonly()
                         ->formatstateusing(fn ($state) => $state ?? now()->format('Y-m-d H:i:s'))
-                        ->hidden(fn (callable $get) => $get('status') !== 'diterima'),
+                        ->hidden(fn (callable $get) => $get('status') !== 'Diterima Keuangan'),
                         DateTimePicker::make('tgl_ditolak')
                         ->readonly()
                         ->formatstateusing(fn ($state) => $state ?? now()->format('Y-m-d H:i:s'))
-                        ->hidden(fn (callable $get) => $get('status') !== 'ditolak'),
+                        ->hidden(fn (callable $get) => $get('status') !== 'Ditolak Keuangan'),
                     ])
                     ->action(function ($record, $data) {
-                        Reimburse::updateOrCreate(
-                            ['id' => $record->id],
+                        PengajuanReimburse::updateOrCreate(
+                            ['id' => $record->pengajuanreimburse_id],
                             [
-                            'status'=> $data['status'],
-                            'tgl_diterima'=> $data['tgl_diterima']?? null,
-                            'tgl_ditolak'=> $data['tgl_ditolak']?? null,
+                            'status_keuangan'=> $data['status'],
+                            'tgl_diterima_keuangan'=> $data['tgl_diterima']?? null,
+                            'tgl_ditolak_keuangan'=> $data['tgl_ditolak']?? null,
                         ]);
-                    })->hidden(fn ($record) => !Auth::user()->hasRole('Bagian Keuangan')),
+                        if($data['status'] === 'Ditolak Keuangan'){
+                            $record->update(
+                                [
+                                'status'=> 'Ditolak',
+                                'tgl_ditolak'=> $data['tgl_ditolak_keuangan']?? null,
+                            ]);
+                        }
+                    })->hidden(fn ($record) => !Auth::user()->hasRole('Bagian Keuangan') || optional($record->pengajuanreimburse)->id === null),
+                Tables\Actions\Action::make('Ubah Status')
+                    ->form(fn ($record) =>[
+                        Select::make('status')
+                        ->reactive()
+                        ->options([
+                            'Diterima Sekdin' => 'Diterima',
+                            'Ditolak Sekdin' => 'Ditolak',
+                        ]),
+                        DateTimePicker::make('tgl_diterima')
+                        ->readonly()
+                        ->formatstateusing(fn ($state) => $state ?? now()->format('Y-m-d H:i:s'))
+                        ->hidden(fn (callable $get) => $get('status') !== 'Diterima Sekdin'),
+                        DateTimePicker::make('tgl_ditolak')
+                        ->readonly()
+                        ->formatstateusing(fn ($state) => $state ?? now()->format('Y-m-d H:i:s'))
+                        ->hidden(fn (callable $get) => $get('status') !== 'Ditolak Sekdin'),
+                    ])
+                    ->action(function ($record, $data) {
+                        PengajuanReimburse::updateOrCreate(
+                            ['id' => $record->pengajuanreimburse_id],
+                            [
+                            'status_sekdin'=> $data['status'],
+                            'tgl_diterima_sekdin'=> $data['tgl_diterima']?? null,
+                            'tgl_ditolak_sekdin'=> $data['tgl_ditolak']?? null,
+                            ]);
+                            if($data['status'] === 'Ditolak Sekdin'){
+                                $record->update(
+                                    [
+                                    'status'=> 'Ditolak',
+                                    'tgl_ditolak'=> $data['tgl_ditolak_sekdin']?? null,
+                                ]);
+                            }
+                    })->hidden(fn ($record) => !Auth::user()->hasRole('Sekretaris Dinas') || optional($record->pengajuanreimburse)->status_keuangan !== 'Diterima Keuangan'),
+                    Tables\Actions\Action::make('Ubah Status')
+                    ->form(fn ($record) =>[
+                        Select::make('status')
+                        ->reactive()
+                        ->options([
+                            'Diterima Kadin' => 'Diterima',
+                            'Ditolak Kadin' => 'Ditolak',
+                        ]),
+                        DateTimePicker::make('tgl_diterima')
+                        ->readonly()
+                        ->formatstateusing(fn ($state) => $state ?? now()->format('Y-m-d H:i:s'))
+                        ->hidden(fn (callable $get) => $get('status') !== 'Diterima Kadin'),
+                        DateTimePicker::make('tgl_ditolak')
+                        ->readonly()
+                        ->formatstateusing(fn ($state) => $state ?? now()->format('Y-m-d H:i:s'))
+                        ->hidden(fn (callable $get) => $get('status') !== 'Ditolak Kadin'),
+                    ])
+                    ->action(function ($record, $data) {
+                        PengajuanReimburse::updateOrCreate(
+                            ['id' => $record->pengajuanreimburse_id],
+                            [
+                            'status_kadin'=> $data['status'],
+                            'tgl_diterima_kadin'=> $data['tgl_diterima']?? null,
+                            'tgl_ditolak_kadin'=> $data['tgl_ditolak']?? null,
+                        ]);
+                        if($data['status'] === 'Diterima Kadin'){
+                            $record->update(
+                                [
+                                'status'=> 'diterima',
+                                'tgl_diterima'=> $data['tgl_diterima_kadin']?? null,
+                            ]);
+                        }
+                    })->hidden(fn ($record) => !Auth::user()->hasRole('Kepala Dinas') || optional($record->pengajuanreimburse)->status_keuangan !== 'Diterima Keuangan'|| optional($record->pengajuanreimburse)->status_sekdin !== 'Diterima Sekdin'),
                 Tables\Actions\Action::make('Laporan')
                     ->url(fn($record)=>self::getUrl("laporan", ['record' => $record->id]))
                     // ->hidden(fn($record) => $record->status !== "diterima"),

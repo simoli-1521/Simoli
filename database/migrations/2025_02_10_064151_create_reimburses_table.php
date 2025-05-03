@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users', 'id')->onDelete('cascade');
             $table->foreignId('bbm_id')->constrained('bbms', 'id')->onDelete('cascade')->nullable();
+            $table->foreignId('pengajuanreimburse_id')->constrained('pengajuan_reimburses', 'id')->onDelete('cascade')->nullable();
             // $table->foreignId('souvenir_id')->constrained('souvenirs', 'id')->onDelete('cascade')->nullable();
             $table->dateTime('tgl_pengajuan')->nullable();
             $table->dateTime('tgl_diterima')->nullable();

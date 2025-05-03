@@ -25,4 +25,9 @@ class Reimburse extends Model
     {
         return $this->hasMany(Souvenir::class, 'reimburse_id');
     }
+
+    public function pengajuanreimburse()
+    {
+        return $this->belongsTo(PengajuanReimburse::class, 'pengajuanreimburse_id');
+    }
 }
