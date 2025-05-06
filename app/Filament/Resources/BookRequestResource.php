@@ -41,7 +41,7 @@ class BookRequestResource extends Resource
     
     protected static ?string $navigationGroup = 'Perpustakaan Keliling';
 
-    protected static ?string $slug = 'request';
+    protected static ?string $slug = 'permintaan';
 
     public static function form(Form $form): Form
     {
