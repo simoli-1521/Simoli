@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             // $table->unsignedBigInteger('id_pelapor')->nullable(); // Bisa null untuk laporan anonim
             // $table->foreign('id_pelapor')->references('id')->on('users')->onDelete('set null');
-            $table->foreignId('pelapor_id')->constrained('users', 'id')->nullable()->onDelete('set null');
+            $table->foreignId('pelapor_id')->constrained('users', 'id')->nullable();
             // $table->unsignedBigInteger('id_pegawai');
             // $table->foreign('id_pegawai')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('pegawai_id')->constrained('users', 'id')->onDelete('cascade');
