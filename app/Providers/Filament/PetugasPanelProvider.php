@@ -31,6 +31,7 @@ use Illuminate\Support\Facades\Blade;
 use App\Filament\Resources\ReimburseResource;
 use App\Filament\Resources\KehadiranResource;
 use App\Filament\Resources\SuratResource;
+use App\Filament\Resources\PenilaianPegawaiResource;
 use App\Filament\Resources\KeterlambatanResource;
 use App\Filament\Resources\BookRequestResource;
 use App\Filament\Resources\BookResource;
@@ -64,6 +65,7 @@ class PetugasPanelProvider extends PanelProvider
                 BorrowResource::class,
                 KategoriBukuResource::class,
                 PopularitasResource::class,
+                PenilaianPegawaiResource::class,
             ])
             ->discoverResources(in: app_path('Filament/Petugas/Resources'), for: 'App\\Filament\\Petugas\\Resources')
             ->discoverPages(in: app_path('Filament/Petugas/Pages'), for: 'App\\Filament\\Petugas\\Pages')
@@ -133,6 +135,7 @@ class PetugasPanelProvider extends PanelProvider
                         ]),
                     NavigationGroup::make('Penjadwalan')
                     ->items([
+                        ...PenilaianPegawaiResource::getNavigationItems(),
                         ...KehadiranResource::getNavigationItems(),
                         ...KeterlambatanResource::getNavigationItems(),
                         ...ReimburseResource::getNavigationItems(),
