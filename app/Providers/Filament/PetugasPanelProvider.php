@@ -21,9 +21,12 @@ use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
 use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 use Filament\Navigation\MenuItem;
 use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
+use Awcodes\WireChat\WireChatPlugin;
 use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
+use Filament\View\PanelsRenderHook;
+use Illuminate\Support\Facades\Blade;
 
 use App\Filament\Resources\ReimburseResource;
 use App\Filament\Resources\KehadiranResource;
@@ -70,8 +73,16 @@ class PetugasPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                // Widgets\FilamentInfoWidget::class,
             ])
+            ->viteTheme('resources/css/filament/admin/theme.css')
+            ->renderHook(
+                PanelsRenderHook::HEAD_END,
+                fn(): string => Blade::render('@wirechatStyles'),
+            )
+            ->renderHook(
+                PanelsRenderHook::BODY_END,
+                fn(): string => Blade::render('@wirechatAssets'),
+            )
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -125,6 +136,14 @@ class PetugasPanelProvider extends PanelProvider
                         ...KehadiranResource::getNavigationItems(),
                         ...KeterlambatanResource::getNavigationItems(),
                         ...ReimburseResource::getNavigationItems(),
+                    ]),
+                    NavigationGroup::make('Perpustakaan')
+                    ->items([
+                        ...BookRequestResource::getNavigationItems(),
+                        ...BorrowResource::getNavigationItems(),
+                        ...BookResource::getNavigationItems(),
+                        ...KategoriBukuResource::getNavigationItems(),
+                        ...PopularitasResource::getNavigationItems(),
                     ]),
                     NavigationGroup::make('User Management')
                         ->items([

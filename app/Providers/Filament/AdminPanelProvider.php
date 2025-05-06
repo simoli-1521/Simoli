@@ -46,7 +46,7 @@ use Filament\Navigation\MenuItem;
 use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
 use function request;
 use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
-
+use Rupadana\ApiService\ApiServicePlugin;
 
 
 class AdminPanelProvider extends PanelProvider
@@ -115,6 +115,7 @@ class AdminPanelProvider extends PanelProvider
                     ->locale(config('app.locale'))
                     ->plugins(['dayGrid', 'timeGrid'])
                     ->config([])
+                // ApiServicePlugin::make()
             ])
             ->userMenuItems([
                 MenuItem::make()

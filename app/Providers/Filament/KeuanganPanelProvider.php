@@ -27,6 +27,12 @@ use App\Filament\Resources\SouvenirResource;
 use App\Models\Souvenir;
 use App\Filament\Resources\BBMResource;
 use App\Models\Bbm;
+use Filament\Navigation\MenuItem;
+use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
+use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
+use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
+use Filament\View\PanelsRenderHook;
+use Illuminate\Support\Facades\Blade;
 
 class KeuanganPanelProvider extends PanelProvider
 {
@@ -48,16 +54,24 @@ class KeuanganPanelProvider extends PanelProvider
                 SouvenirResource::class,
                 BBMResource::class,
             ])
-            // ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            // ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->discoverResources(in: app_path('Filament/Keuangan/Resources'), for: 'App\\Filament\\Keuangan\\Resources')
+            ->discoverPages(in: app_path('Filament/Keuangan/Pages'), for: 'App\\Filament\\Keuangan\\Pages')
             ->pages([
                 Pages\Dashboard::class,
             ])
-            // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
             ])
+            ->viteTheme('resources/css/filament/admin/theme.css')
+            ->renderHook(
+                PanelsRenderHook::HEAD_END,
+                fn(): string => Blade::render('@wirechatStyles'),
+            )
+            ->renderHook(
+                PanelsRenderHook::BODY_END,
+                fn(): string => Blade::render('@wirechatAssets'),
+            )
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -71,6 +85,28 @@ class KeuanganPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+            ])
+            ->plugins([
+                FilamentEditProfilePlugin::make()
+                    ->setIcon('heroicon-o-user')
+                    ->shouldShowAvatarForm(
+                        value: true,
+                        directory: 'avatars'
+                    ),
+                FilamentFullCalendarPlugin::make()
+                    ->schedulerLicenseKey('')
+                    // ->selectable(true)
+                    // ->editable()
+                    ->timezone(config('app.timezone'))
+                    ->locale(config('app.locale'))
+                    ->plugins(['dayGrid', 'timeGrid'])
+                    ->config([])
+            ])
+            ->userMenuItems([
+                MenuItem::make()
+                    ->label('Edit profile')
+                    ->url(fn(): string => EditProfilePage::getUrl())
+                    ->icon('heroicon-m-user-circle'),
             ])
             // ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
             //     return $builder->groups([

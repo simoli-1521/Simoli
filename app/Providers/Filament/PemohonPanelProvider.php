@@ -18,6 +18,14 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Auth\CustomRegister;
+use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
+use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
+use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
+use Filament\Navigation\MenuItem;
+use Filament\Navigation\NavigationItem;
+use Awcodes\WireChat\WireChatPlugin;
+use Filament\View\PanelsRenderHook;
+use Illuminate\Support\Facades\Blade;
 
 use App\Filament\Resources\SuratResource;
 use App\Filament\Resources\PenilaianPegawaiResource;
@@ -49,10 +57,40 @@ class PemohonPanelProvider extends PanelProvider
             ->pages([
                 Pages\Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Pemohon/Widgets'), for: 'App\\Filament\\Pemohon\\Widgets')
+            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+            ])
+            ->viteTheme('resources/css/filament/admin/theme.css')
+            ->renderHook(
+                PanelsRenderHook::HEAD_END,
+                fn(): string => Blade::render('@wirechatStyles'),
+            )
+            ->renderHook(
+                PanelsRenderHook::BODY_END,
+                fn(): string => Blade::render('@wirechatAssets'),
+            )
+            ->plugins([
+                FilamentEditProfilePlugin::make()
+                    ->setIcon('heroicon-o-user')
+                    ->shouldShowAvatarForm(
+                        value: true,
+                        directory: 'avatars'
+                    ),
+                FilamentFullCalendarPlugin::make()
+                    ->schedulerLicenseKey('')
+                    // ->selectable(true)
+                    // ->editable()
+                    ->timezone(config('app.timezone'))
+                    ->locale(config('app.locale'))
+                    ->plugins(['dayGrid', 'timeGrid'])
+                    ->config([])
+            ])
+            ->userMenuItems([
+                MenuItem::make()
+                    ->label('Edit profile')
+                    ->url(fn(): string => EditProfilePage::getUrl())
+                    ->icon('heroicon-m-user-circle'),
             ])
             ->middleware([
                 EncryptCookies::class,

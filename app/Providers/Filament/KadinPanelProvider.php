@@ -21,6 +21,12 @@ use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
 use Filament\Pages\Dashboard;
+use Filament\Navigation\MenuItem;
+use Filament\View\PanelsRenderHook;
+use Illuminate\Support\Facades\Blade;
+use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
+use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
+use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
 
 use App\Filament\Resources\SuratResource;
 use App\Filament\Resources\KehadiranResource;
@@ -55,16 +61,24 @@ class KadinPanelProvider extends PanelProvider
                 BookRequestResource::class,
                 PopularitasResource::class,
             ])
-            // ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            // ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->discoverResources(in: app_path('Filament/Kadin/Resources'), for: 'App\\Filament\\Kadin\\Resources')
+            ->discoverPages(in: app_path('Filament/Kadin/Pages'), for: 'App\\Filament\\Kadin\\Pages')
             ->pages([
                 Pages\Dashboard::class,
             ])
-            // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
             ])
+            ->viteTheme('resources/css/filament/admin/theme.css')
+            ->renderHook(
+                PanelsRenderHook::HEAD_END,
+                fn(): string => Blade::render('@wirechatStyles'),
+            )
+            ->renderHook(
+                PanelsRenderHook::BODY_END,
+                fn(): string => Blade::render('@wirechatAssets'),
+            )
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -78,6 +92,28 @@ class KadinPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+            ])
+            ->plugins([
+                FilamentEditProfilePlugin::make()
+                    ->setIcon('heroicon-o-user')
+                    ->shouldShowAvatarForm(
+                        value: true,
+                        directory: 'avatars'
+                    ),
+                FilamentFullCalendarPlugin::make()
+                    ->schedulerLicenseKey('')
+                    // ->selectable(true)
+                    // ->editable()
+                    ->timezone(config('app.timezone'))
+                    ->locale(config('app.locale'))
+                    ->plugins(['dayGrid', 'timeGrid'])
+                    ->config([])
+            ])
+            ->userMenuItems([
+                MenuItem::make()
+                    ->label('Edit profile')
+                    ->url(fn(): string => EditProfilePage::getUrl())
+                    ->icon('heroicon-m-user-circle'),
             ])
             // ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
             //     return $builder->groups([
