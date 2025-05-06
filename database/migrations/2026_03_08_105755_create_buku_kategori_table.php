@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('buku_kategori', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('buku_id')->constrained('bukus')->onDelete('cascade'); // Foreign key to bukus
-            $table->foreignId('kategori_id')->constrained('kategori_bukus')->onDelete('cascade'); // Foreign key to kategori_bukus
+            $table->foreignId('buku_id')->constrained('bukus', 'id')->onDelete('cascade'); // Foreign key to bukus
+            $table->foreignId('kategori_id')->constrained('kategori_bukus', 'id')->onDelete('cascade'); // Foreign key to kategori_bukus
             $table->timestamps();
         });
     }

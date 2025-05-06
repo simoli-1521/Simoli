@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             // $table->unsignedBigInteger('id_pelapor')->nullable(); // Bisa null untuk laporan anonim
             // $table->foreign('id_pelapor')->references('id')->on('users')->onDelete('set null');
-            $table->foreignId('pelapor_id')->constrained('users')->onDelete('set null');
+            $table->foreignId('pelapor_id')->constrained('users', 'id')->nullable()->onDelete('set null');
             // $table->unsignedBigInteger('id_pegawai');
             // $table->foreign('id_pegawai')->references('id')->on('users')->onDelete('cascade');
-            $table->foreignId('pegawai_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('pegawai_id')->constrained('users', 'id')->onDelete('cascade');
             $table->enum('penilaian', ['Sangat Baik', 'Baik', 'Cukup', 'Buruk']);
             $table->integer('skor_penilaian')->nullable(); // Penilaian numerik opsional
             $table->string('jenis_insiden', 100); // Jenis insiden yang dilaporkan
