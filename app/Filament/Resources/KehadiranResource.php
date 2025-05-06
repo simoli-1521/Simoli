@@ -299,6 +299,9 @@ class KehadiranResource extends Resource
                 TextColumn::make('waktu_selesai')->label('Presensi Akhir'),
                 TextColumn::make('waktu_mulai_status')->label('Status Presensi Awal'),
                 TextColumn::make('waktu_selesai_status')->label('Status Presensi Akhir'),
+                TextColumn::make('izin.status_admin')->label('Persetujuan Izin Admin'),
+                TextColumn::make('izin.status_sekdin')->label('Persetujuan Izin Sekdin'),
+                TextColumn::make('izin.status_kadin')->label('Persetujuan Izin Kadin'),
             ])
             ->filters([
                 //
@@ -344,7 +347,7 @@ class KehadiranResource extends Resource
                             'izin_id' => $izin->id,
                         ]);
                     })->hidden(fn($record) => $record->waktu_selesai_status !== null || !Auth::user()->hasRole('Petugas')),
-                    Tables\Actions\Action::make('Pengajuan izin Admin')
+                    Tables\Actions\Action::make('Persetujuan izin Admin')
                     ->form(fn ($record) =>[
                         Select::make('status')
                         ->reactive()
@@ -360,7 +363,7 @@ class KehadiranResource extends Resource
                             'status_admin'=> $data['status'],
                         ]);
                     })->hidden(fn ($record) => !Auth::user()->hasRole('Admin') || optional($record->izin)->alasan === null),
-                Tables\Actions\Action::make('Pengajuan Izin Sekdin')
+                Tables\Actions\Action::make('Persetujuan Izin Sekdin')
                     ->form(fn ($record) =>[
                         Select::make('status')
                         ->reactive()
@@ -376,7 +379,7 @@ class KehadiranResource extends Resource
                             'status_sekdin'=> $data['status'],
                         ]);
                     })->hidden(fn ($record) => !Auth::user()->hasRole('Sekretaris Dinas') || optional($record->izin)->status_admin !== 'Diterima Admin'),
-                Tables\Actions\Action::make('Pengajuan Izin Kadin')
+                Tables\Actions\Action::make('Persetujuan Izin Kadin')
                     ->form(fn ($record) =>[
                         Select::make('status')
                         ->reactive()

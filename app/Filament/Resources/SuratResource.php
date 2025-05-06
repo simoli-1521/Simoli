@@ -115,9 +115,9 @@ class SuratResource extends Resource
                 TextColumn::make('narahubung')->label('Narahubung')
                     ->limit(50) // Hanya menampilkan 50 karakter pertama
                     ->tooltip(fn($record) => $record->narahubung),
-                TextColumn::make('pengajuan.status_admin')->label('Status Pengajuan Admin'),
-                TextColumn::make('pengajuan.status_sekdin')->label('Status Pengajuan Sekdin'),
-                TextColumn::make('pengajuan.status_kadin')->label('Status Pengajuan Kadin'),
+                TextColumn::make('pengajuan.status_admin')->label('Status Persetujuan Admin'),
+                TextColumn::make('pengajuan.status_sekdin')->label('Status Persetujuan Sekdin'),
+                TextColumn::make('pengajuan.status_kadin')->label('Status Persetujuan Kadin'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->hidden(fn () => !Auth::user()->hasRole('Pemohon Kegiatan')),
@@ -143,7 +143,7 @@ class SuratResource extends Resource
                     ->margin([10, 10, 10, 10]) // Set custom margins
                     ->content(fn($record) => view('reusable.surat_masuk.surat_masuk', ['surat' => $record])),
                     // ->hidden(fn($record) => $record->status_kadin !== 'Diterima Kadin')
-                Tables\Actions\Action::make('Pengajuan Admin')
+                Tables\Actions\Action::make('Persetujuan Admin')
                     ->form(fn ($record) =>[
                         Select::make('status')
                         ->reactive()
@@ -172,7 +172,7 @@ class SuratResource extends Resource
                             'keterangan_admin'=> $data['keterangan']?? null,
                         ]);
                     })->hidden(fn ($record) => !Auth::user()->hasRole('Admin')),
-                Tables\Actions\Action::make('Pengajuan Sekdin')
+                Tables\Actions\Action::make('Persetujuan Sekdin')
                     ->form(fn ($record) =>[
                         Select::make('status')
                         ->reactive()
@@ -201,7 +201,7 @@ class SuratResource extends Resource
                             'keterangan_sekdin'=> $data['keterangan']?? null,
                         ]);
                     })->hidden(fn ($record) => !Auth::user()->hasRole('Sekretaris Dinas') || optional($record->pengajuan)->status_admin !== 'Diterima Admin'),
-                Tables\Actions\Action::make('Pengajuan Kadin')
+                Tables\Actions\Action::make('Persetujuan Kadin')
                     ->form(fn ($record) =>[
                         Select::make('status')
                         ->reactive()
