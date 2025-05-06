@@ -13,17 +13,20 @@ return new class extends Migration
     {
         Schema::create('izins', function (Blueprint $table) {
             $table->id();
-            $table->string('alasan',20);
+            $table->string('alasan', 20);
             $table->datetime('waktu_izin');
             $table->enum('status_admin', [
-                'Diterima Admin', 
-                'Ditolak Admin',])->nullable();
+                'Diterima Admin',
+                'Ditolak Admin',
+            ])->nullable();
             $table->enum('status_sekdin', [
-                'Diterima Sekdin', 
-                'Ditolak Sekdin',])->nullable();
+                'Diterima Sekdin',
+                'Ditolak Sekdin',
+            ])->nullable();
             $table->enum('status_kadin', [
-                'Diterima Kadin', 
-                'Ditolak Kadin',])->nullable();
+                'Diterima Kadin',
+                'Ditolak Kadin',
+            ])->nullable();
             $table->timestamps();
         });
     }

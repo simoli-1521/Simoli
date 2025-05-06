@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             // $table->unsignedBigInteger('id_pelapor')->nullable(); // Bisa null untuk laporan anonim
             // $table->foreign('id_pelapor')->references('id')->on('users')->onDelete('set null');
-            $table->foreignId('pelapor_id')->constrained('users')->onDelete('set null');
             // $table->unsignedBigInteger('id_pegawai');
             // $table->foreign('id_pegawai')->references('id')->on('users')->onDelete('cascade');
-            $table->foreignId('pegawai_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('pelapor_id')->nullable()->constrained('users', 'id')->onDelete('set null');
+            $table->foreignId('pegawai_id')->constrained('users', 'id')->onDelete('cascade');
             $table->enum('penilaian', ['Sangat Baik', 'Baik', 'Cukup', 'Buruk']);
             $table->integer('skor_penilaian')->nullable(); // Penilaian numerik opsional
             $table->string('jenis_insiden', 100); // Jenis insiden yang dilaporkan
@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('lokasi', 100)->nullable(); // Lokasi di perpustakaan
             $table->boolean('anonim')->default(false); // Flag untuk laporan anonim
             $table->string('foto_kejadian')->nullable(); // Foto yang diupload sebagai bukti kejadian
-            
+
             $table->timestamps();
         });
     }

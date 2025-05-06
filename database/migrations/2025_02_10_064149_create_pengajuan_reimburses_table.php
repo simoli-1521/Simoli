@@ -21,14 +21,17 @@ return new class extends Migration
             $table->dateTime('tgl_diterima_kadin')->nullable();
             $table->dateTime('tgl_ditolak_kadin')->nullable();
             $table->enum('status_keuangan', [
-                'Diterima Keuangan', 
-                'Ditolak Keuangan',])->nullable();
+                'Diterima Keuangan',
+                'Ditolak Keuangan',
+            ])->nullable();
             $table->enum('status_sekdin', [
-                'Diterima Sekdin', 
-                'Ditolak Sekdin',])->nullable();
+                'Diterima Sekdin',
+                'Ditolak Sekdin',
+            ])->nullable();
             $table->enum('status_kadin', [
-                'Diterima Kadin', 
-                'Ditolak Kadin',])->nullable();
+                'Diterima Kadin',
+                'Ditolak Kadin',
+            ])->nullable();
             $table->timestamps();
         });
     }

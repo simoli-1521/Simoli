@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('bukus', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('perminatan_buku_id')->constrained('perminatan_bukus')->onDelete('set null');
+            $table->foreignId('perminatan_buku_id')->nullable()->constrained('perminatan_bukus', 'id')->onDelete('set null');
             $table->string('judul');
             $table->string('penulis');
             $table->string('kode_buku')->unique();
