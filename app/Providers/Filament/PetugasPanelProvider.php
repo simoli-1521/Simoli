@@ -36,6 +36,7 @@ use App\Filament\Resources\BookRequestResource;
 use App\Filament\Resources\BookResource;
 use App\Filament\Resources\BorrowResource;
 use App\Filament\Resources\KategoriBukuResource;
+use App\Filament\Resources\PenilaianPegawaiResource;
 use App\Filament\Resources\PopularitasResource;
 
 
@@ -58,6 +59,7 @@ class PetugasPanelProvider extends PanelProvider
                 SuratResource::class,
                 KehadiranResource::class,
                 ReimburseResource::class,
+                PenilaianPegawaiResource::class,
                 KeterlambatanResource::class,
                 BookRequestResource::class,
                 BookResource::class,
@@ -97,7 +99,7 @@ class PetugasPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->plugins([                
+            ->plugins([
                 FilamentEditProfilePlugin::make()
                     ->setIcon('heroicon-o-user')
                     ->shouldShowAvatarForm(
@@ -132,19 +134,19 @@ class PetugasPanelProvider extends PanelProvider
                                 ->url(fn(): string => '/petugas/chat'),
                         ]),
                     NavigationGroup::make('Penjadwalan')
-                    ->items([
-                        ...KehadiranResource::getNavigationItems(),
-                        ...KeterlambatanResource::getNavigationItems(),
-                        ...ReimburseResource::getNavigationItems(),
-                    ]),
+                        ->items([
+                            ...KehadiranResource::getNavigationItems(),
+                            ...KeterlambatanResource::getNavigationItems(),
+                            ...ReimburseResource::getNavigationItems(),
+                        ]),
                     NavigationGroup::make('Perpustakaan')
-                    ->items([
-                        ...BookRequestResource::getNavigationItems(),
-                        ...BorrowResource::getNavigationItems(),
-                        ...BookResource::getNavigationItems(),
-                        ...KategoriBukuResource::getNavigationItems(),
-                        ...PopularitasResource::getNavigationItems(),
-                    ]),
+                        ->items([
+                            ...BookRequestResource::getNavigationItems(),
+                            ...BorrowResource::getNavigationItems(),
+                            ...BookResource::getNavigationItems(),
+                            ...KategoriBukuResource::getNavigationItems(),
+                            ...PopularitasResource::getNavigationItems(),
+                        ]),
                     NavigationGroup::make('User Management')
                         ->items([
                             NavigationItem::make('Edit Profil')
@@ -152,7 +154,7 @@ class PetugasPanelProvider extends PanelProvider
                                 ->isActiveWhen(fn(): bool => request()->routeIs('filament.petugas.resources.users.edit'))
                                 ->url(fn(): string => '/petugas/edit-profile'),
                         ]),
-                    ]);
-                });
+                ]);
+            });
     }
 }
