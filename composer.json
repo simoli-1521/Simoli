@@ -16,6 +16,7 @@
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5",
         "namu/wirechat": "^0.2.2",
+        "rupadana/filament-api-service": "^3.4",
         "saade/filament-fullcalendar": "^3.0",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-permission": "^6.16",
