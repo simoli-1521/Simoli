@@ -31,7 +31,9 @@ class ReimburseResource extends Resource
 {
     protected static ?string $model = Reimburse::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+    
+    protected static ?string $navigationGroup = 'Reimburse';
 
     public static function form(Form $form): Form
     {

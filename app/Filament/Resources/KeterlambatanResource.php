@@ -24,7 +24,8 @@ class KeterlambatanResource extends Resource
 {
     protected static ?string $model = Keterlambatan::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-clock';
+    protected static ?string $navigationGroup = 'Penjadwalan';
 
     public static function form(Form $form): Form
     {

@@ -41,8 +41,18 @@ use Torgodly\Html2Media\Tables\Actions\Html2MediaAction;
 class KehadiranResource extends Resource
 {
     protected static ?string $model = Kehadiran::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    
+    protected static ?string $navigationGroup = 'Penjadwalan';
+    
+    protected static ?string $navigationLabel = 'Presensi';
+    
+    protected static ?string $modelLabel = 'Presensi Pegawai';
+    
+    protected static ?string $pluralModelLabel = 'Presensi Pegawai';
+    
+    protected static ?string $slug = 'presensi';
+    
+    protected static ?string $navigationIcon = 'heroicon-o-map-pin';
 
     public static function form(Form $form): Form
     {

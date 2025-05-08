@@ -38,6 +38,8 @@ class PenilaianPegawaiResource extends Resource
     protected static ?string $modelLabel = 'Penilaian Pegawai';
     
     protected static ?string $pluralModelLabel = 'Penilaian Pegawai';
+    
+    protected static ?string $navigationGroup = 'Penjadwalan';
 
 
     public static function form(Form $form): Form

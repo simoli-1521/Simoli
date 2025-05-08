@@ -20,7 +20,9 @@ class BBMResource extends Resource
 {
     protected static ?string $model = Bbm::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-funnel';
+
+    protected static ?string $navigationGroup = 'Reimburse';
 
     public static function form(Form $form): Form
     {

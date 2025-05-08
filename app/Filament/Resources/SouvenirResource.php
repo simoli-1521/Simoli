@@ -19,7 +19,9 @@ class SouvenirResource extends Resource
 {
     protected static ?string $model = Souvenir::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
+
+    protected static ?string $navigationGroup = 'Reimburse';
 
     public static function form(Form $form): Form
     {

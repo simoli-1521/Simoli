@@ -23,7 +23,8 @@ class JamKerjaResource extends Resource
 {
     protected static ?string $model = JamKerja::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-clock';
+    protected static ?string $navigationGroup = 'Surat';
 
     public static function shouldRegisterNavigation(): bool
     {
