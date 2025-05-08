@@ -162,7 +162,7 @@ class ReimburseResource extends Resource
                 ->icon(fn ($state): string => match ($state){
                     'diterima' => 'heroicon-o-check-circle',
                     'ditolak' => 'heroicon-o-x-circle',
-                    default => 'heroicon-o-x-question-mark-circle',
+                    default => 'heroicon-o-question-mark-circle',
                 })
                 ->color(fn ($state): string => match ($state){
                     'diterima' => 'success',
@@ -203,7 +203,7 @@ class ReimburseResource extends Resource
                         if($data['status'] === 'Ditolak Keuangan'){
                             $record->update(
                                 [
-                                'status'=> 'Ditolak',
+                                'status'=> 'ditolak',
                                 'tgl_ditolak'=> $data['tgl_ditolak_keuangan']?? null,
                             ]);
                         }
@@ -236,7 +236,7 @@ class ReimburseResource extends Resource
                             if($data['status'] === 'Ditolak Sekdin'){
                                 $record->update(
                                     [
-                                    'status'=> 'Ditolak',
+                                    'status'=> 'ditolak',
                                     'tgl_ditolak'=> $data['tgl_ditolak_sekdin']?? null,
                                 ]);
                             }
@@ -266,6 +266,13 @@ class ReimburseResource extends Resource
                             'tgl_diterima_kadin'=> $data['tgl_diterima']?? null,
                             'tgl_ditolak_kadin'=> $data['tgl_ditolak']?? null,
                         ]);
+                        if($data['status'] === 'Ditolak Kadin'){
+                            $record->update(
+                                [
+                                'status'=> 'ditolak',
+                                'tgl_ditolak'=> $data['tgl_ditolak_kadin']?? null,
+                            ]);
+                        }
                         if($data['status'] === 'Diterima Kadin'){
                             $record->update(
                                 [
