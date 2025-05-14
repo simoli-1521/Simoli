@@ -78,7 +78,7 @@ class SuratResource extends Resource
 
                 Section::make('Detail Surat')
                     ->schema([
-                        TextInput::make('nomor_surat')->label('Nomor Surat'),
+                        TextInput::make('nomor_surat')->label('Nomor Surat')->visible(fn (string $context): bool => $context === 'edit'),
                         TextInput::make('nama_kegiatan')->label('Nama Kegiatan')->required(),
                         TextInput::make('nama_PJ')->label('Nama Penanggung Jawab')->required(),
                         TextInput::make('jabatan_PJ')->label('Jabatan Penanggung Jawab')->required(),
