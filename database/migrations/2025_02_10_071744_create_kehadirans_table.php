@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users', 'id')->onDelete('cascade');
             $table->foreignId('penjadwalan_id')->constrained('penjadwalans', 'id')->onDelete('cascade');
-            $table->foreignId('izin_id')->constrained('izins', 'id')->onDelete('cascade')->nullable();
+            $table->foreignId('izin_id')->nullable()->constrained('izins', 'id')->onDelete('cascade');
             // $table->float('jadwal_lokasi_peta_latitude');
             // $table->float('jadwal_lokasi_peta_longtitude');
             // $table->timestamp('jadwal_waktu_mulai')->nullable();
@@ -24,8 +24,10 @@ return new class extends Migration
             $table->float('lokasi_peta_longtitude')->nullable();
             $table->timestamp('waktu_mulai')->nullable();
             $table->timestamp('waktu_selesai')->nullable();
-            $table->string('waktu_mulai_status', 255);
-            $table->string('waktu_selesai_status', 255);
+            $table->string('waktu_mulai_status', 255)->nullable();
+            $table->string('waktu_selesai_status', 255)->nullable();
+            $table->string('foto_kehadiran_awal', 255)->nullable();
+            $table->string('foto_kehadiran_akhir', 255)->nullable();
             $table->timestamps();
         });
     }

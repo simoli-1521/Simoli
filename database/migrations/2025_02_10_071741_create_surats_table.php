@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('surats', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pengajuan_id')->constrained('pengajuans', 'id')->onDelete('cascade');
-            $table->foreignId('jam_kerja_id')->constrained('jam_kerjas', 'id')->onDelete('cascade');
-            $table->foreignId('lokasi_id')->constrained('lokasis', 'id')->onDelete('cascade');
+            $table->foreignId('pengajuan_id')->nullable()->constrained('pengajuans', 'id')->onDelete('cascade');
+            $table->foreignId('jam_kerja_id')->nullable()->constrained('jam_kerjas', 'id')->onDelete('cascade');
+            $table->foreignId('lokasi_id')->nullable()->constrained('lokasis', 'id')->onDelete('cascade');
             $table->string('nomor_surat',20)->unique()->nullable();
             // $table->date('tanggal');
             // $table->time('jam');
