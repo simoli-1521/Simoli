@@ -67,7 +67,7 @@ class BookModel extends Model
     
     public function mobil()
     {
-        return $this->belongsToMany(Mobil::class, 'mobil_book', 'buku_id', 'mobil_id');
+        return $this->belongsToMany(Mobil::class, 'mobil_bukus', 'buku_id', 'mobil_id');
     }
 
     public function categories()

@@ -10,7 +10,7 @@ class Mobil extends Model
     
     public function books()
     {
-        return $this->belongsToMany(BookModel::class, 'mobil_book', 'mobil_id', 'buku_id');
+        return $this->belongsToMany(BookModel::class, 'mobil_bukus', 'mobil_id', 'buku_id');
     }
 
     public function getBookTitlesAttribute()
