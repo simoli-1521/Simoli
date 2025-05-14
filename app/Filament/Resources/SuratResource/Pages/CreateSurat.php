@@ -19,9 +19,8 @@ class CreateSurat extends CreateRecord
 
     protected function afterCreate(): void
     {
-        // Runs after the form fields are saved to the database.
         $pengajuan = Pengajuan::create([
-            'tgl_pengajuan'=> $this->record->created_at,
+            'tgl_pengajuan'=>  $this->record->created_at,
         ]);
         $this->record->update([
             'pengajuan_id' => $pengajuan->id,
