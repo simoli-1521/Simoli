@@ -255,7 +255,7 @@ class BookResource extends Resource
 
                     // Log the reason using the LogBuku model
                     LogBuku::create([
-                        'book_id' => $record->id,
+                        'buku_id' => $record->id,
                         'reason' => $data['reason'],
                     ]);
 

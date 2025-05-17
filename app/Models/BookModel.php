@@ -40,7 +40,7 @@ class BookModel extends Model
 
     public function logBuku()
     {
-        return $this->hasMany(LogBuku::class, 'book_id');
+        return $this->hasMany(LogBuku::class, 'buku_id');
     }
 
 

@@ -14,6 +14,6 @@ class LogBuku extends Model
 
     public function book()
     {
-        return $this->belongsTo(BookModel::class, 'book_id');
+        return $this->belongsTo(BookModel::class, 'buku_id');
     }
 }
