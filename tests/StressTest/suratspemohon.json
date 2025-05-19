@@ -1,0 +1,25 @@
+{
+    "jamkerja": {
+        "jam_mulai": "2025-05-20T09:00:00",
+        "jam_akhir": "2025-05-20T11:00:00"
+    },
+    "lokasi": {
+        "nama_lokasi": "SDN 1 Tembalang",
+        "alamat": "Jl. Tembalang Raya No.1, Semarang",
+        "lokasi_peta": {
+            "lat": -7.053,
+            "lng": 110.4092
+        },
+        "latitude": -7.053,
+        "longtitude": 110.4092,
+        "radius": 75
+    },
+    "detail_surat": {
+        "nomor_surat": "002/PKS/V/2025",
+        "nama_kegiatan": "Kegiatan Baca Buku di SDN 1 Tembalang",
+        "nama_PJ": "Zaza Ananda",
+        "jabatan_PJ": "Koordinator Lapangan",
+        "ttd_PJ": "ttd_PJ/zaza_ttd.png",
+        "narahubung": "081234567890"
+    }
+}

@@ -68,3 +68,14 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 git add .
 git commit -m "pesan"
 git push origin b-fahrur
+
+git add .
+git commit -m "message"
+git branch -M main
+git push origin main
+
+php artisan filament:optimize-clear
+php artisan filament:clear-cached-components
+php artisan icons:cache
+php artisan optimize
+php artisan config:clear

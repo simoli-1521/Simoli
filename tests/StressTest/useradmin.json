@@ -1,0 +1,26 @@
+[
+    {
+        "name": "Agus Santoso",
+        "email": "admin@example.com",
+        "password": "Admin@12345",
+        "roles": ["admin"]
+    },
+    {
+        "name": "Dewi Kartika",
+        "email": "kepala.dinas@example.com",
+        "password": "KepalaDinas2025!",
+        "roles": ["kepala dinas"]
+    },
+    {
+        "name": "Rudi Hartono",
+        "email": "sekdin@example.com",
+        "password": "SekdinSecure01#",
+        "roles": ["sekretaris dinas"]
+    },
+    {
+        "name": "Lina Pratiwi",
+        "email": "pemohon.kegiatan@example.com",
+        "password": "PemohonEvent99*",
+        "roles": ["pemohon kegiatan"]
+    }
+]
