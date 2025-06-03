@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\PenilaianPegawaiResource\Pages;
 use App\Models\PenilaianPegawai;
 use App\Models\User;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\FileUpload;
@@ -38,19 +39,18 @@ class PenilaianPegawaiResource extends Resource
     protected static ?string $modelLabel = 'Penilaian Pegawai';
     
     protected static ?string $pluralModelLabel = 'Penilaian Pegawai';
-    
-    protected static ?string $navigationGroup = 'Penjadwalan';
 
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Select::make('pegawai_id')
-                    ->label('Pegawai')
-                    ->relationship('user', 'name')
-                    ->searchable()
-                    ->preload()
+                Hidden::make('pelapor_id')
+                    ->default(fn () => Auth::id()),
+                
+                TextInput::make('nama_pegawai')
+                    ->label('Nama Pegawai')
+                    
                     ->required(),
                     
                 Select::make('jenis_insiden')
@@ -86,6 +86,17 @@ class PenilaianPegawaiResource extends Resource
                 TextInput::make('lokasi')
                     ->label('Lokasi di Perpustakaan')
                     ->maxLength(100),
+                    
+                FileUpload::make('foto_kejadian')
+                    ->label('Foto Bukti (Bila perlu)')
+                    ->helperText('Unggah foto sebagai bukti kejadian (opsional)')
+                    ->image()
+                    ->imageResizeMode('cover')
+                    
+                    ->directory('fotobukti')
+                    ->visibility('public')
+                    ->maxSize(5120) // 5MB
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg', 'image/webp']),
                 
                 Richeditor::make('deskripsi')
                     ->label('Deskripsi Kejadian')
@@ -107,17 +118,6 @@ class PenilaianPegawaiResource extends Resource
                     ])
                     ->required(),
                     
-                FileUpload::make('foto_kejadian')
-                    ->label('Foto Bukti (Bila perlu)')
-                    ->helperText('Unggah foto sebagai bukti kejadian (opsional)')
-                    ->image()
-                    ->imageResizeMode('cover')
-                    
-                    ->directory('fotobukti')
-                    ->visibility('public')
-                    ->maxSize(5120) // 5MB
-                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg', 'image/webp']),
-                    
                 Toggle::make('anonim')
                     ->label('Laporkan Secara Anonim')
                     ->default(false)
@@ -132,7 +132,7 @@ class PenilaianPegawaiResource extends Resource
         
         return $table->recordUrl(null)
             ->columns([
-                TextColumn::make('pegawai.name')
+                TextColumn::make('nama_pegawai')
                     ->label('Nama Pegawai')
                     ->sortable()
                     ->searchable(),
@@ -159,16 +159,17 @@ class PenilaianPegawaiResource extends Resource
                     // ->label('Foto')
                     // ->circular(false)
                     // ->square()
-                    ->defaultImageUrl(url('/storage/copanga.webp')) 
+                    ->defaultImageUrl(url('/storage/copanya.jpg')) 
                     // ->extraImgAttributes(['loading' => 'lazy'])
                     ->visibility('public'),
                 
                 
                 TextColumn::make('pelapor.name')
-                    ->label('Pelapor')
-                   // ->visible($isAdmin)
-                    ->placeholder('Anonim')
-                    ->sortable(),
+                ->label('Pelapor')
+                ->formatStateUsing(function ($record) {
+                    return $record->anonim ? 'Anonim' : ($record->pelapor->name ?? 'Tidak Diketahui');
+                })
+                ->sortable(),
                     
                 IconColumn::make('anonim')
                     ->label('Anonim')

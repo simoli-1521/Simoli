@@ -41,7 +41,7 @@ class BookRequestResource extends Resource
     
     protected static ?string $navigationGroup = 'Perpustakaan Keliling';
 
-    protected static ?string $slug = 'permintaan';
+    protected static ?string $slug = 'request';
 
     public static function form(Form $form): Form
     {
@@ -49,6 +49,8 @@ class BookRequestResource extends Resource
             ->schema([
                 Hidden::make('user_id')
                     ->default(fn () => Auth::id()),
+                Hidden::make('tgl_permintaan')
+                    ->default(now()),
                 Section::make('Info Buku yang Diinginkan')
                     ->schema([
                         Group::make()
@@ -219,7 +221,7 @@ class BookRequestResource extends Resource
                     ->color('primary')
                     ->url(function (BookRequest $record) {
                         // Pass the request ID as a parameter to the book creation page
-                        return BookResource::getUrl('create', ['request_id' => $record->id]);
+                        return BookResource::getUrl('create', ['id_permintaan' => $record->id]);
                     })
                     ->openUrlInNewTab()
                     ->visible(fn (BookRequest $record) => $record->isApproved()),

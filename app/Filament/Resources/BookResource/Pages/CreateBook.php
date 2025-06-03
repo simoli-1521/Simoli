@@ -17,11 +17,11 @@ class CreateBook extends CreateRecord
      */
     public function mount(): void
     {
-        // First call the parent mount method
+        
         parent::mount();
         
-        // Then check if we have a request_id
-        $requestId = request()->get('request_id');
+        
+        $requestId = request()->get('id_permintaan');
         
         if ($requestId) {
             $bookRequest = BookRequest::find($requestId);
@@ -29,7 +29,7 @@ class CreateBook extends CreateRecord
             if ($bookRequest && $bookRequest->isApproved()) {
                 // Fill the form with data from the request
                 $this->form->fill([
-                    'request_id' => $requestId,
+                    'id_permintaan' => $requestId,
                     'judul' => $bookRequest->judul,
                     'penulis' => $bookRequest->penulis,
                     'kode_buku' => $bookRequest->kode_buku,
@@ -49,14 +49,14 @@ class CreateBook extends CreateRecord
     protected function afterCreate(): void
     {
         // Check if this book was created from a request
-        $requestId = request()->get('request_id');
+        $requestId = request()->get('id_permintaan');
         
         if ($requestId) {
             $bookRequest = BookRequest::find($requestId);
             
             if ($bookRequest) {
                 // Connect the book to the request
-                $this->record->request_id = $requestId;
+                $this->record->id_permintaan = $requestId;
                 $this->record->save();
                 
                 // Send notification

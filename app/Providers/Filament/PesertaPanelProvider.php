@@ -24,6 +24,7 @@ use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Support\Facades\Blade;
+use App\Filament\Widgets\CelendarWidget;
 
 use App\Filament\Resources\PenilaianPegawaiResource;
 use App\Filament\Resources\BookRequestResource;
@@ -53,9 +54,9 @@ class PesertaPanelProvider extends PanelProvider
             ->pages([
                 Pages\Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
+                CelendarWidget::class,
             ])
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->renderHook(

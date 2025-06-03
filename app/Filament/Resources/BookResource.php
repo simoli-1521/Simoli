@@ -60,9 +60,9 @@ class BookResource extends Resource
                     ->collapsible(),
 
                 
-                Section::make('Book Information')
+                Section::make('Informasi Buku')
                 ->schema([
-                Hidden::make('request_id'),
+                Hidden::make('id_permintaan'),
 
                 TextInput::make('judul')
                 ->required()
@@ -87,10 +87,10 @@ class BookResource extends Resource
                 ->numeric()
                 ->label('Kode ISBN')
                 ->placeholder('Masukkan Kode Buku....'),
-                Select::make('categories') // Multi-select for categories
+                Select::make('kategori') 
                 ->label('Kategori Buku')
                 ->multiple()
-                ->relationship('categories', 'nama_kategori')
+                ->relationship('kategori', 'nama_kategori')
                 ->preload(),
                 TextInput::make('penerbit')
                 ->required()
@@ -116,9 +116,9 @@ class BookResource extends Resource
                 ->prefix('IDR'),
 
             ]),
-            CheckboxList::make('mobil') // Add this line
-                ->relationship('mobil', 'nopol') // Assuming 'nopol' is the car's license plate
-                ->label('Cars'),
+            CheckboxList::make('mobil') 
+                ->relationship('mobil', 'nopol') 
+                ->label('Mobil yang diregistrasikan'),
 
             ]);
     }
@@ -136,7 +136,7 @@ class BookResource extends Resource
                 ImageColumn::make('sampul_buku')
                     ->disk('public')
                     ->label('Cover Buku')
-                    ->defaultImageUrl(url('/storage/copanya.png')) 
+                    ->defaultImageUrl(url('/storage/copanya.jpg')) 
                     ->extraImgAttributes(['loading' => 'lazy'])
                     ->visibility('public'),
 
@@ -149,7 +149,7 @@ class BookResource extends Resource
                 ->searchable()
                 ->copyable()
                 ->sortable(),
-                TextColumn::make('categories.nama_kategori') // Display the category names
+                TextColumn::make('kategori.nama_kategori') // Display the category names
                 ->label('Kategori')
                 ->badge()
                 ->searchable()
@@ -181,20 +181,21 @@ class BookResource extends Resource
 
                 TextColumn::make('from_request')
                     ->label('Dari Request')
-                    ->getStateUsing(fn (BookModel $record) => $record->request_id ? 'Yes' : 'No')
+                    ->getStateUsing(fn (BookModel $record) => $record->id_permintaan ? 'Yes' : 'No')
                     ->badge()
+                    ->sortable()
                     ->color(fn (string $state): string => $state === 'Yes' ? 'success' : 'gray'),
                 
             ])
             ->filters([
                 SelectFilter::make('kategori')
                 ->label('Kategori Buku')
-                ->relationship('categories', 'nama_kategori'),
+                ->relationship('kategori', 'nama_kategori'),
                 TernaryFilter::make('from_request')
                     ->label('From Request')
                     ->queries(
-                        true: fn (Builder $query) => $query->whereNotNull('request_id'),
-                        false: fn (Builder $query) => $query->whereNull('request_id'),
+                        true: fn (Builder $query) => $query->whereNotNull('id_permintaan'),
+                        false: fn (Builder $query) => $query->whereNull('id_permintaan'),
                     ),
             ])
             ->headerActions([
@@ -209,7 +210,7 @@ class BookResource extends Resource
                         TextInput::make('nama_kategori')
                             ->label('Nama Genre')
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(30),
                         Textarea::make('deskripsi_kategori')
                             ->label('Deskripsi')
                             ->required(),
@@ -232,18 +233,18 @@ class BookResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
                 Action::make('decreaseStock')
-                ->label('Decrease Stock')
+                ->label('Kurangi Stok')
                 ->color('danger')
                 ->icon('heroicon-o-minus')
                 ->form([
-                    Forms\Components\TextInput::make('reason')
-                        ->label('Reason for Decreasing Stock')
+                    Forms\Components\TextInput::make('alasan')
+                        ->label('Alasan Pengurangan Stok')
                         ->required(),
                 ])
                 ->action(function (BookModel $record, array $data) {
                     if ($record->stok <= 0) {
                         Notification::make()
-                            ->title('Stock is already zero')
+                            ->title('Buku tidak tersedia')
                             ->danger()
                             ->send();
                         return;
@@ -256,27 +257,27 @@ class BookResource extends Resource
                     // Log the reason using the LogBuku model
                     LogBuku::create([
                         'buku_id' => $record->id,
-                        'reason' => $data['reason'],
+                        'alasan' => $data['alasan'],
                     ]);
 
                     Notification::make()
-                        ->title('Stock decreased successfully')
+                        ->title('Stok Berhasil Dikurangkan')
                         ->success()
                         ->send();
                 })
                 ->requiresConfirmation()
-                ->modalHeading('Decrease Stock')
-                ->modalDescription('Are you sure you want to decrease the stock of this book?')
-                ->modalSubmitActionLabel('Yes, decrease stock'),
+                ->modalHeading('Kurangi Stok')
+                ->modalDescription('Apakah anda yakin?')
+                ->modalSubmitActionLabel('Iya, kurangi stok.'),
 
                 Action::make('viewRequest')
                     ->label('View Request')
                     ->icon('heroicon-o-eye')
-                    ->url(fn (BookModel $record) => $record->request_id 
-                        ? BookRequestResource::getUrl('edit', ['record' => $record->request_id]) 
+                    ->url(fn (BookModel $record) => $record->id_permintaan
+                        ? BookRequestResource::getUrl('edit', ['record' => $record->id_permintaan]) 
                         : null)
                     ->openUrlInNewTab()
-                    ->visible(fn (BookModel $record) => !empty($record->request_id)),
+                    ->visible(fn (BookModel $record) => !empty($record->id_permintaan)),
             ])
             
             ->bulkActions([
@@ -290,7 +291,7 @@ class BookResource extends Resource
     {
         return [
             LogBukuRelationManager::class,
-            
+            BookRequestsRelationManager::class,
         ];
     }
 

@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('bukus', function (Blueprint $table) {
             $table->id();
-            // $table->foreignId('perminatan_buku_id')->nullable()->constrained('perminatan_bukus', 'id');
+            // $table->foreignId('perminatan_buku_id')->constrained('perminatan_bukus')->onDelete('set null');
+            $table->foreignId('perminatan_buku_id')->nullable()->constrained('perminatan_bukus')->nullOnDelete();
             $table->string('judul');
             $table->string('penulis');
             $table->string('kode_buku')->unique();
@@ -23,8 +24,8 @@ return new class extends Migration
             $table->year('tahun_terbit');
             $table->integer('stok')->default(0);
             $table->decimal('harga_buku', 8, 2)->default(0);
-            $table->unsignedBigInteger('request_id')->nullable();
-            $table->foreign('request_id')->references('id')->on('perminatan_bukus')->onDelete('set null');
+            $table->unsignedBigInteger('id_permintaan')->nullable();
+            $table->foreign('id_permintaan')->references('id')->on('perminatan_bukus')->onDelete('set null');
             $table->timestamps();
         });
     }

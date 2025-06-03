@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('logbukus', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('buku_id')->constrained('bukus', 'id')->onDelete('cascade');
+            $table->foreignId('buku_id')->constrained('bukus')->onDelete('cascade');
             $table->string('alasan');
             $table->timestamps();
         });

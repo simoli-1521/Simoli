@@ -32,7 +32,7 @@ class KategoriBukuResource extends Resource
                 TextInput::make('nama_kategori')
                     ->label('Nama Genre')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(30),
                 TextArea::make('deskripsi_kategori')
                     ->label('Deskripsi')
                     ->required(),
@@ -47,7 +47,20 @@ class KategoriBukuResource extends Resource
                     ->label('Nama Kategori')
                     ->searchable()
                     ->sortable(),
-                
+                TextColumn::make('deskripsi_kategori')
+                    ->label('Deskripsi')
+                    ->limit(50)
+                    ->tooltip(function (TextColumn $column): ?string {
+                        $state = $column->getState();
+                        if (strlen($state) <= 50) {
+                            return null;
+                        }
+                        return $state;
+                    }),
+                TextColumn::make('books_count')
+                    ->label('Jumlah Buku')
+                    ->counts('books')
+                    ->sortable(),
             ])
             ->filters([
                 // Add filters if needed

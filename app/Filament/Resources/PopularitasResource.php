@@ -10,6 +10,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -28,10 +29,17 @@ class PopularitasResource extends Resource
     {
         return $table
             ->columns([
+                ImageColumn::make('sampul_buku')
+                    ->disk('public')
+                    ->label('Cover Buku')
+                    ->defaultImageUrl(url('/storage/copanya.jpg')) 
+                    ->extraImgAttributes(['loading' => 'lazy'])
+                    ->visibility('public'),
                 TextColumn::make('judul')
                     ->label('Judul Buku')
                     ->searchable()
                     ->sortable(),
+                
                 TextColumn::make('penulis')
                     ->label('Penulis')
                     ->searchable()
@@ -40,6 +48,7 @@ class PopularitasResource extends Resource
                     ->label('Jumlah Peminjaman')
                     ->sortable(),
             ])
+            ->defaultSort('jumlah_pinjam', 'desc')
             ->filters([
                 
             ])

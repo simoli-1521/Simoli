@@ -17,8 +17,8 @@ class LogBukuRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('reason')
-                    ->label('Reason')
+                Forms\Components\TextInput::make('alasan')
+                    ->label('Alasan')
                     ->required(),
             ]);
     }
@@ -27,12 +27,12 @@ class LogBukuRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('reason')
-                    ->label('Reason')
+                Tables\Columns\TextColumn::make('alasan')
+                    ->label('Alasan')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Date')
+                    ->label('Tanggal')
                     ->dateTime()
                     ->sortable(),
             ])

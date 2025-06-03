@@ -58,50 +58,9 @@ class KehadiranResource extends Resource
     {
         return $form
             ->schema([
-                // Select::make('id_user')
-                //     ->relationship('users', 'name'),
-                // Select::make('penjadwalan_id')
                 Hidden::make('user_id'),
                 Hidden::make('penjadwalan_id')
-                    // // ->relationship('penjadwalan', 'id')
-                    // ->options(function () {
-                    //     $penjadwalan = Penjadwalan::whereHas('surat.jamkerja', function ($query) {
-                    //         $query->whereDate('tgl', today());
-                    //     })->pluck('id'); // Get matching assignment IDs
-                
-                    //     return Penjadwalan::whereIn('id', $penjadwalan)
-                    //         ->pluck('id', 'id');
-                    //         // ->with('surat')->get()->mapWithKeys(fn ($att) => [$att->id => "{$att->id} {$att->nama_kegiatan}"]);
-
-
-                    // })
-                    // ->reactive()
-                    // ->afterStateUpdated(function ($state, callable $set, $livewire) {
-                    //     // $findpenjadwalan = Penjadwalan::find($state)?->id_surat;
-                    //     // $findsurat = Surat::find($findpenjadwalan)?->id_lokasi;
-                    //     // $findlokasi = Lokasi::find($findsurat);
-                    //     // $findjamkerja = JamKerja::find($findsurat);
-                    //     $penjadwalan = Penjadwalan::with(['surat.lokasi', 'surat.jamkerja'])->find($state);
-                    //     $lokasi = $penjadwalan->surat->lokasi ?? null;
-                    //     $jamkerja = $penjadwalan->surat->jamkerja ?? null;
-                    //     if($lokasi){
-                    //         $set('jadwal_lokasi_peta', ['lat' => $lokasi->latitude, 'lng' => $lokasi->longtitude]);
-                    //         $set('jadwal_lokasi_peta_latitude', $lokasi->latitude);
-                    //         $set('jadwal_lokasi_peta_longtitude', $lokasi->longtitude);
-                    //         $set('jadwal_lokasi_peta_radius', $lokasi->radius);
-                            
-                    //         $livewire->dispatch('refreshMap');    
-                    //     }
-                    //     if($jamkerja){
-                    //         $set('jadwal_waktu_mulai', "{$jamkerja->tgl} {$jamkerja->jam_mulai}");
-                    //         $set('jadwal_waktu_selesai', "{$jamkerja->tgl} {$jamkerja->jam_akhir}");
-                    //     }
-                    // })
                     ->afterStateHydrated(function ($state, callable $set, $livewire) {
-                        // $findpenjadwalan = Penjadwalan::find($state)?->id_surat;
-                        // $findsurat = Surat::find($findpenjadwalan)?->id_lokasi;
-                        // $findlokasi = Lokasi::find($findsurat);
-                        // $findjamkerja = JamKerja::find($findsurat);
                         $penjadwalan = Penjadwalan::with(['surat.lokasi', 'surat.jamkerja'])->find($state);
                         $lokasi = $penjadwalan->surat->lokasi ?? null;
                         $jamkerja = $penjadwalan->surat->jamkerja ?? null;
@@ -233,8 +192,14 @@ class KehadiranResource extends Resource
                         ->reactive(),
                         // ->required(),
                     KameraAwal::make('camera')
-                        ->columnSpan(2)
-                        ,
+                        ->columnSpan(2),
+                    // Action::make('toggleCamera')
+                    //     ->label(fn ($livewire) => $livewire->getCameraActive() ? 'Close Camera' : 'Open Camera')
+                    //     ->button()
+                    //     ->color(fn ($livewire) => $livewire->getCameraActive() ? 'danger' : 'primary')
+                    //     ->action(function ($livewire) {
+                    //         $livewire->toggleCamera();
+                    //     }),
                     ])
                     // ->hidden(fn (callable $get) => $get('Presensi') !== 'awal')
                     ->hidden(fn ($record) => $record->waktu_mulai_status !== null),
@@ -291,8 +256,7 @@ class KehadiranResource extends Resource
                             ->reactive(),
                             // ->required(),
                         KameraAkhir::make('camera')
-                            ->columnSpan(2)
-                            ,
+                            ->columnSpan(2),
                             ])
                     // ->hidden(fn (callable $get) => $get('Presensi') !== 'akhir')
                     ->hidden(fn ($record) => $record->waktu_mulai_status === null || $record->waktu_selesai_status !== null),

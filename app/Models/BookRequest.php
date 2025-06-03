@@ -25,6 +25,7 @@ class BookRequest extends Model
         'penerbit',
         'tahun_terbit',
         'alasan_permintaan',
+        'tgl_permintaan',
         'status',
     ];
 

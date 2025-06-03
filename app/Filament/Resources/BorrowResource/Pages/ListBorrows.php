@@ -14,7 +14,7 @@ class ListBorrows extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()->hidden(fn () => !Auth::user()->hasRole('Petugas')),
+            // Actions\CreateAction::make()->hidden(fn () => !Auth::user()->hasRole('Petugas')),
         ];
     }
 }

@@ -22,13 +22,13 @@ class BookModel extends Model
         'tahun_terbit',
         'stok',
         'harga_buku',
-        'request_id', 
+        'id_permintaan', 
         'sampul_buku',
     ];
 
     public function borrow()
     {
-        return $this->hasMany(Borrow::class, 'bukus_id');
+        return $this->hasMany(Borrow::class, 'buku_id');
     }
 
     public function bookRequests()
@@ -70,13 +70,13 @@ class BookModel extends Model
         return $this->belongsToMany(Mobil::class, 'mobil_bukus', 'buku_id', 'mobil_id');
     }
 
-    public function categories()
+    public function kategori()
     {
         return $this->belongsToMany(KategoriBuku::class, 'buku_kategori', 'buku_id', 'kategori_id');
     }
 
     public function request(): BelongsTo
     {
-        return $this->belongsTo(BookRequest::class, 'request_id');
+        return $this->belongsTo(BookRequest::class, 'id_permintaan');
     }
 }

@@ -13,18 +13,18 @@ return new class extends Migration
     {
         Schema::create('perminatan_bukus', function (Blueprint $table) {
             $table->id();
-            // $table->unsignedBigInteger('id_user');
-            // $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
-            $table->foreignId('user_id')->constrained('users', 'id')->onDelete('cascade');
+            
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('judul');
             $table->string('penulis')->nullable();
             $table->string('kode_buku')->unique()->nullable();
             $table->string('penerbit', 50)->nullable();
             $table->year('tahun_terbit')->nullable();
-            // $table->foreign('id_buku')->references('id')->on('bukus')->onDelete('cascade');
-            // $table->dateTime('tgl_permintaan');
+            $table->unsignedBigInteger('id_buku')->nullable();
+            //$table->foreign('id_buku')->references('id')->on('bukus')->onDelete('cascade');
+            $table->dateTime('tgl_permintaan');
             $table->string('alasan_permintaan');
-            $table->enum('status', ['aktif', 'disetujui', 'ditolak'])->default('aktif');
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamps();
         });
     }

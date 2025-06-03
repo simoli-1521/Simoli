@@ -12,14 +12,14 @@ class Borrow extends Model
     protected $table = 'peminjamans';
     protected $guarded = [];
 
-    public function bukus()
+    public function buku()
     {
         return $this->belongsTo(BookModel::class);
     }
 
-    public static function borrowBook($bukus_id, $nama_peminjam, $borrow_date, $due_date)
+    public static function borrowBook($buku_id, $nama_peminjam, $tgl_tenggat)
     {
-        $book = BookModel::find($bukus_id);
+        $book = BookModel::find($buku_id);
 
         if ($book && $book->stok > 0) {
             // Decrease the stock
@@ -29,12 +29,12 @@ class Borrow extends Model
 
             // Create a borrow record
             return self::create([
-                'bukus_id' => $bukus_id,
+                'buku_id' => $buku_id,
                 'nama_peminjam' => $nama_peminjam,
-                'borrow_date' => $borrow_date,
-                'due_date' => $due_date,
+                'tgl_peminjaman' => now(),
+                'tgl_tenggat' => $tgl_tenggat,
                 
-                'status' => 'active',
+                'status' => 'aktif',
             ]);
         }
 
@@ -44,26 +44,26 @@ class Borrow extends Model
     /**
      * Return a book and update the stock.
      */
-    public function returnBook($return_date, $condition = null)
+    public function returnBook($tgl_pengembalian, $kondisi = null)
 {
-    $book = $this->bukus;
+    $book = $this->buku;
     
     if ($book) {
         // Calculate fine based on the condition of the book
-        $fine = 0;
+        $denda = 0;
 
-        if ($condition === 'rusak') {
+        if ($kondisi === 'rusak') {
             // If the book is returned in a damaged state, set the fine to the full price of the book
-            $fine = $book->harga_buku;
+            $denda = $book->harga_buku;
         } else {
             // Calculate fine if the book is returned late
-            $dueDate = $this->due_date;
+            $tgl_tenggat = $this->tgl_tenggat;
 
-            if ($return_date > $dueDate) {
+            if ($tgl_pengembalian > $tgl_tenggat) {
                 // Calculate the number of hours late
-                $hoursLate = $return_date->diffInHours($dueDate);
+                $hoursLate = $tgl_pengembalian->diffInHours($tgl_tenggat);
                 // Calculate fine: 10% of the book price + 1% for each hour late
-                $fine = ($book->harga_buku * 0.10) + ($hoursLate * ($book->harga_buku * 0.01));
+                $denda = ($book->harga_buku * 0.10) + ($hoursLate * ($book->harga_buku * 0.01));
             }
         }
 
@@ -76,10 +76,10 @@ class Borrow extends Model
 
         // Update the borrow record
         $this->update([
-            'return_date' => $return_date,
+            'tgl_pengembalian' => $tgl_pengembalian,
             'status' => 'returned',
-            'fine' => $fine,
-            'condition' => $condition,
+            'denda' => $denda,
+            'kondisi' => $kondisi,
         ]);
         
     }
@@ -91,9 +91,14 @@ class Borrow extends Model
 
         static::creating(function ($borrow) {
             // Set the status to 'active' when creating a new borrowing record
-            $borrow->status = 'active';
+            $borrow->status = 'aktif';
             
-        });
+        
+
+        if (empty($borrow->tgl_peminjaman)) {
+            $borrow->tgl_peminjaman = now();
+        }
+    });
 
         
 
@@ -110,7 +115,7 @@ class Borrow extends Model
 
     public function checkOverdue()
     {
-        if ($this->status !== 'returned' && Carbon::now()->greaterThan($this->due_date)) {
+        if ($this->status !== 'returned' && Carbon::now()->greaterThan($this->tgl_tenggat)) {
             $this->status = 'overdue';
             $this->saveQuietly(); // Menghindari infinite loop
         }

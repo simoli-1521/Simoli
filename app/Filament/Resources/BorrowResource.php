@@ -16,7 +16,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
-
+use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Actions\ExportAction;
 
 use Filament\Tables\Actions\BulkExportAction;
@@ -44,11 +44,12 @@ class BorrowResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('bukus_id')
+                Select::make('buku_id')
                 ->label('Buku yang Dipinjam')
                 ->relationship('bukus', 'judul')
                 ->required()
                 ->preload()
+                ->searchable()
                 ->rules([
                     function () {
                         return function (string $attribute, $value, Closure $fail) {
@@ -63,14 +64,13 @@ class BorrowResource extends Resource
                 ->required()
                 ->label('Nama Peminjam')
                 ->placeholder('Masukkan Nama Penulis....'),
-                DateTimePicker::make('borrow_date')
-                ->label('Tanggal Peminjaman')
-                ->displayFormat('d/m/Y')
-                ->required()
-                ->seconds(false),
-                DateTimePicker::make('due_date')
+                //DateTimePicker::make('tgl_peminjaman')
+                //->label('Tanggal Peminjaman')
+                //->displayFormat('d/m/Y')
+                //->required()
+                //->seconds(false),
+                DateTimePicker::make('tgl_tenggat')
                 ->label('Tanggal Tenggat')
-                ->displayFormat('d/m/Y')
                 ->required()
                 ->seconds(false),
                 
@@ -79,91 +79,97 @@ class BorrowResource extends Resource
             ]);
     }
 
-    public static function table(Table $table): Table
-    {
-        return $table
-            ->columns([
-                TextColumn::make('nama_peminjam')
-                ->label('Nama Peminjam')
-                ->searchable()
-                ->copyable()
-                ->sortable(),
+public static function table(Table $table): Table
+{
+    return $table
+        ->columns([
+            TextColumn::make('nama_peminjam')
+            ->label('Nama Peminjam')
+            ->searchable()
+            ->copyable()
+            ->sortable(),
 
-                TextColumn::make('bukus.judul')
-                ->label('Judul Buku')
-                ->searchable()
-                ->copyable()
-                ->sortable(),
-                
-                TextColumn::make('borrow_date')
-                ->label('Tanggal Peminjaman')
-                ->searchable()
-                ->copyable()
-                ->sortable(),
-                TextColumn::make('due_date')
-                ->label('Tenggat Waktu')
-                ->searchable()
-                ->copyable()
-                ->sortable(),
-                TextColumn::make('return_date')
-                ->label('Waktu Pengembalian')
-                ->searchable()
-                ->copyable()
-                ->sortable(),
-                TextColumn::make('status')
-                ->label('Status')
-                ->badge()
-                ->searchable()
-                ->sortable(),
-
-                TextColumn::make('bukus.harga_buku')
-                ->label('Harga Buku')
-                ->money('IDR') // Format as currency
-                ->sortable(),
-                
-                TextColumn::make('fine')
-                ->label('Denda')
-                ->money('IDR') // Format as currency
-                ->sortable(),
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make()
-                ->disabled(fn (Borrow $record) => $record->status === 'returned')
-                ->visible(fn (Borrow $record) => $record->status !== 'returned')
-                ->hidden(fn () => !Auth::user()->hasRole('Petugas')),
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\Action::make('return')
-                ->label('Pengembalian Buku')
-                ->color('success')
-                ->visible(fn ($record) => in_array($record->status, ['active', 'overdue']))
-                ->form([
-                    Select::make('condition')
-                        ->label('Kondisi Buku')
-                        ->options([
-                            'good' => 'Baik',
-                            'rusak' => 'Rusak',
-                        ])
-                        ->required()
-                        ->rules('required'),
-                ])
-                ->action(function ($record, $data) {
-                    $record->returnBook(now(), $data['condition']);
-                }),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ])
-            ->headerActions([
-                ExportAction::make()->exporter(BorrowExporter::class)
+            TextColumn::make('bukus.judul')
+            ->label('Judul Buku')
+            ->searchable()
+            ->copyable()
+            ->sortable(),
             
-                    
+            TextColumn::make('tgl_peminjaman')
+            ->label('Tanggal Peminjaman')
+            ->searchable()
+            ->copyable()
+            ->sortable(),
+            TextColumn::make('tgl_tenggat')
+            ->label('Tenggat Waktu')
+            ->searchable()
+            ->copyable()
+            ->sortable(),
+            TextColumn::make('tgl_pengembalian')
+            ->label('Waktu Pengembalian')
+            ->searchable()
+            ->copyable()
+            ->sortable(),
+            TextColumn::make('status')
+            ->label('Status')
+            ->badge()
+            ->searchable()
+            ->sortable(),
+
+            TextColumn::make('bukus.harga_buku')
+            ->label('Harga Buku')
+            ->money('IDR') // Format as currency
+            ->sortable(),
+            
+            TextColumn::make('denda')
+            ->label('Denda')
+            ->money('IDR') // Format as currency
+            ->sortable(),
+        ])
+        ->filters([
+            //
+        ])
+        ->actions([
+            Tables\Actions\EditAction::make()
+            ->disabled(fn (Borrow $record) => $record->status === 'returned')
+            ->visible(fn (Borrow $record) => $record->status !== 'returned')
+            ->hidden(fn () => !Auth::user()->hasRole('Petugas'))
+            ->slideOver(), // Mengubah edit menjadi modal slide over
+            Tables\Actions\DeleteAction::make(),
+            Tables\Actions\Action::make('return')
+            ->label('Pengembalian Buku')
+            ->color('success')
+            ->visible(fn ($record) => in_array($record->status, ['aktif', 'overdue']))
+            ->form([
+                Select::make('kondisi')
+                    ->label('Kondisi Buku')
+                    ->options([
+                        'good' => 'Baik',
+                        'rusak' => 'Rusak',
+                    ])
+                    ->required()
+                    ->rules('required'),
+            ])
+            ->action(function ($record, $data) {
+                $record->returnBook(now(), $data['kondisi']);
+            }),
+        ])
+        ->bulkActions([
+            Tables\Actions\BulkActionGroup::make([
+                Tables\Actions\DeleteBulkAction::make(),
+            ]),
+        ])
+        ->headerActions([
+            CreateAction::make()
+                ->slideOver()
+                ->label('Tambah Peminjaman')
+                ->mutateFormDataUsing(function (array $data): array {
+                    $data['tgl_peminjaman'] = now();
+                    return $data;
+                }),
             ]);
-    }
+        
+}
 
     public static function getRelations(): array
     {
@@ -176,7 +182,7 @@ class BorrowResource extends Resource
     {
         return [
             'index' => Pages\ListBorrows::route('/'),
-            'create' => Pages\CreateBorrow::route('/create'),
+            //'create' => Pages\CreateBorrow::route('/create'),
             'edit' => Pages\EditBorrow::route('/{record}/edit'),
         ];
     }

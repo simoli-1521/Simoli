@@ -14,7 +14,7 @@ class PenilaianPegawai extends Model
     
     protected $fillable = [
         'pelapor_id',
-        'pegawai_id',
+        'nama_pegawai',
         'penilaian',
         'skor_penilaian',
         'jenis_insiden',
@@ -35,8 +35,5 @@ class PenilaianPegawai extends Model
     /**
      * Get the pegawai being assessed.
      */
-    public function user()
-{
-    return $this->belongsTo(User::class, 'pegawai_id'); // Adjust the foreign key if necessary
-}
+   
 }

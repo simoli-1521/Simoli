@@ -13,7 +13,7 @@ class CreateBorrow extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $book = BookModel::find($data['bukus_id']);
+        $book = BookModel::find($data['buku_id']);
 
         // Check if the book is available
         if ($book && $book->stok > 0) {
