@@ -46,7 +46,7 @@ class BorrowResource extends Resource
             ->schema([
                 Select::make('buku_id')
                 ->label('Buku yang Dipinjam')
-                ->relationship('bukus', 'judul')
+                ->relationship('buku', 'judul')
                 ->required()
                 ->preload()
                 ->searchable()
@@ -89,7 +89,7 @@ public static function table(Table $table): Table
             ->copyable()
             ->sortable(),
 
-            TextColumn::make('bukus.judul')
+            TextColumn::make('buku.judul')
             ->label('Judul Buku')
             ->searchable()
             ->copyable()
@@ -116,7 +116,7 @@ public static function table(Table $table): Table
             ->searchable()
             ->sortable(),
 
-            TextColumn::make('bukus.harga_buku')
+            TextColumn::make('buku.harga_buku')
             ->label('Harga Buku')
             ->money('IDR') // Format as currency
             ->sortable(),
