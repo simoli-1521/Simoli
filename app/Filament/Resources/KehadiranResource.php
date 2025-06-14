@@ -53,7 +53,7 @@ class KehadiranResource extends Resource
     protected static ?string $slug = 'presensi';
     
     protected static ?string $navigationIcon = 'heroicon-o-map-pin';
-
+    
     public static function form(Form $form): Form
     {
         return $form
@@ -413,11 +413,35 @@ class KehadiranResource extends Resource
         ];
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        if (Auth::check() && Auth::user()->hasAnyRole(['Admin', 'Sekretaris Dinas', 'Kepala Dinas'])){
+            return parent::getEloquentQuery();
+        }
+        return parent::getEloquentQuery()->where('user_id', auth()->id());
+    }
+
+    public static function canView($record): bool
+    {
+        return Auth::user()->hasAnyRole(['Admin', 'Sekretaris Dinas', 'Kepala Dinas']) || $record->user_id === auth()->id();
+    }
+
+    public static function canEdit($record): bool
+    {
+        return Auth::user()->hasAnyRole(['Admin', 'Sekretaris Dinas', 'Kepala Dinas']) || $record->user_id === auth()->id();
+    }
+
+    public static function canDelete($record): bool
+    {
+        return Auth::user()->hasAnyRole(['Admin', 'Sekretaris Dinas', 'Kepala Dinas']) || $record->user_id === auth()->id();
+    }
+
+
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListKehadirans::route('/'),
-            'create' => Pages\CreateKehadiran::route('/create'),
+            // 'create' => Pages\CreateKehadiran::route('/create'),
             'edit' => Pages\EditKehadiran::route('/{record}/edit'),
             'laporan' => Pages\LaporanKehadiran::route('/{record}/laporan'),
         ];
