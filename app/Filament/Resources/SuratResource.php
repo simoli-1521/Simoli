@@ -42,8 +42,8 @@ class SuratResource extends Resource
                         Group::make()->relationship('jamkerja')
                             ->schema([
                                 // DatePicker::make('tgl')->label('Tanggal'),
-                                DateTimePicker::make('jam_mulai')->label('Jam Mulai'),
-                                DateTimePicker::make('jam_akhir')->label('Jam Akhir'),
+                                DateTimePicker::make('jam_mulai')->label('Jam Mulai')->required(),
+                                DateTimePicker::make('jam_akhir')->label('Jam Akhir')->required(),
                             ]),
                     ]),
 
@@ -51,8 +51,8 @@ class SuratResource extends Resource
                     ->schema([
                         Group::make()->relationship('lokasi')
                             ->schema([
-                                TextInput::make('nama_lokasi')->label('Nama Lokasi'),
-                                TextInput::make('alamat')->label('Alamat'),
+                                TextInput::make('nama_lokasi')->label('Nama Lokasi')->required(),
+                                TextInput::make('alamat')->label('Alamat')->required(),
                                 Map::make('lokasi_peta')
                                 ->disabled()
                                 ->columnSpanFull()
@@ -72,7 +72,7 @@ class SuratResource extends Resource
                                 }),
                                 TextInput::make('latitude')->numeric()->readonly()->label('Latitude'),
                                 TextInput::make('longtitude')->numeric()->readonly()->label('Longtitude'),
-                                TextInput::make('radius')->numeric()->label('Radius (Meter)'),
+                                TextInput::make('radius')->numeric()->label('Radius (Meter)')->required(),
                             ]),
                     ]),
 
@@ -88,7 +88,8 @@ class SuratResource extends Resource
                             ->imageEditor()
                             ->disk('public')
                             ->directory('ttd_PJ')
-                            ->visibility('public'),
+                            ->visibility('public')
+                            ->required(),
                         TextInput::make('narahubung')->label('Narahubung')->required(),
                     ]),
             ]);
