@@ -41,7 +41,11 @@ class PenjadwalanResource extends Resource
                     ->label('Pegawai'),
                 // TextInput::make('surat_id'),
                     Select::make('surat_id')
-                    ->relationship('surat', 'nomor_surat')
+                    ->relationship('surat', 'nomor_surat', function ($query) {
+                        $query->whereHas('pengajuan', function($roleQuery){
+                            $roleQuery->where('status_kadin', 'Diterima Kadin');
+                        });
+                    })
                     ->label('Surat'),
                 Select::make('mobil_id')
                     ->relationship('mobils', 'nama')
