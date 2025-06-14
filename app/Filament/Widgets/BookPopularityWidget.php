@@ -11,7 +11,7 @@ class BookPopularityWidget extends ChartWidget
     protected static ?string $heading = 'Popularitas Buku';
     protected static ?int $sort = 4;
     protected static ?string $maxHeight = '300px';
-    protected int | string | array $columnSpan = 'full';
+    // protected int | string | array $columnSpan = 'full';
 
     protected function getData(): array
     {
