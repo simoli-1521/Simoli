@@ -46,6 +46,12 @@ class BookResource extends Resource
     protected static ?string $slug = 'perpustakaan';
 
     public static ?string $label = 'Buku Yang Ada';
+
+    public static function canAccess(array $parameters = []): bool
+    {
+        return  Auth::user()->hasAnyRole(['Admin', 'Sekretaris Dinas', 'Kepala Dinas', 'Petugas']);
+    }
+
     public static function form(Form $form): Form
     {
         return $form
