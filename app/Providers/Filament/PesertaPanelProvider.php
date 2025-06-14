@@ -26,6 +26,7 @@ use Filament\View\PanelsRenderHook;
 use Illuminate\Support\Facades\Blade;
 use App\Filament\Widgets\CelendarWidget;
 
+use App\Filament\Resources\BookResource;
 use App\Filament\Resources\SuratResource;
 use App\Filament\Resources\PenilaianPegawaiResource;
 use App\Filament\Resources\BookRequestResource;
@@ -47,6 +48,7 @@ class PesertaPanelProvider extends PanelProvider
                 'primary' => Color::Amber,
             ])
             ->resources([
+                BookResource::class,
                 SuratResource::class,
                 PenilaianPegawaiResource::class,
                 BookRequestResource::class,
