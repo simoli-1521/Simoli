@@ -11,10 +11,13 @@ class CelendarWidget extends FullCalendarWidget
 {
     public function fetchEvents(array $fetchInfo): array
     {
-        return Surat::with('jamkerja')
+        return Surat::with(['jamkerja', 'pengajuan'])
             ->whereHas('jamkerja', function ($query) use ($fetchInfo) {
                 $query->where('jam_mulai', '>=', $fetchInfo['start'])
                     ->where('jam_akhir', '<=', $fetchInfo['end']);
+            })
+            ->whereHas('pengajuan', function ($query) {
+                $query->where('status_kadin', 'Diterima kadin');
             })
             ->get()
             ->map(
