@@ -16,6 +16,7 @@
         "laravel/reverb": "^1.0",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5",
+        "maatwebsite/excel": "^3.1",
         "namu/wirechat": "^0.2.2",
         "saade/filament-fullcalendar": "^3.0",
         "simplesoftwareio/simple-qrcode": "^4.2",
