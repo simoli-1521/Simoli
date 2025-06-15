@@ -251,7 +251,7 @@ class KehadiranResource extends Resource
                         //         return time() < strtotime($get('jadwal_waktu_selesai'));} ),
                         //     ]),
                             TextInput::make('waktu_selesai_status')->readonly(),
-                            TextInput::make('foto_kehadiran_akhir')
+                            Hidden::make('foto_kehadiran_akhir')
                             ->afterStateHydrated(function ($state, callable $set, $livewire) {})
                             ->reactive(),
                             // ->required(),
@@ -277,6 +277,7 @@ class KehadiranResource extends Resource
                 TextColumn::make('izin.status_sekdin')->label('Persetujuan Izin Sekdin'),
                 TextColumn::make('izin.status_kadin')->label('Persetujuan Izin Kadin'),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 //
             ])
