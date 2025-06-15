@@ -159,25 +159,28 @@ class ReimburseResource extends Resource
                 TextColumn::make('jenis_reimburse'),
                 TextColumn::make('tgl_pengajuan'),
                 TextColumn::make('biaya')->label('Total Biaya'),
-                TextColumn::make('status')
-                ->badge()
-                ->icon(fn ($state): string => match ($state){
-                    'diterima' => 'heroicon-o-check-circle',
-                    'ditolak' => 'heroicon-o-x-circle',
-                    default => 'heroicon-o-question-mark-circle',
-                })
-                ->color(fn ($state): string => match ($state){
-                    'diterima' => 'success',
-                    'ditolak' => 'danger',
-                    default => 'gray',
-                }),
+                TextColumn::make('PengajuanReimburse.status_keuangan')->label('Status Reimburse Keuangan'),
+                TextColumn::make('PengajuanReimburse.status_sekdin')->label('Status Reimburse Sekdin'),
+                TextColumn::make('PengajuanReimburse.status_kadin')->label('Status Reimburse Kadin'),
+                // TextColumn::make('status')
+                // ->badge()
+                // ->icon(fn ($state): string => match ($state){
+                //     'diterima' => 'heroicon-o-check-circle',
+                //     'ditolak' => 'heroicon-o-x-circle',
+                //     default => 'heroicon-o-question-mark-circle',
+                // })
+                // ->color(fn ($state): string => match ($state){
+                //     'diterima' => 'success',
+                //     'ditolak' => 'danger',
+                //     default => 'gray',
+                // }),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->hidden(fn () => !Auth::user()->hasAnyRole(['Petugas'])),
-                Tables\Actions\Action::make('Ubah Status')
+                Tables\Actions\Action::make('Ubah Status Keuangan')
                     ->form(fn ($record) =>[
                         Select::make('status')
                         ->reactive()
@@ -210,7 +213,7 @@ class ReimburseResource extends Resource
                             ]);
                         }
                     })->hidden(fn ($record) => !Auth::user()->hasRole('Bagian Keuangan') || optional($record->pengajuanreimburse)->id === null),
-                Tables\Actions\Action::make('Ubah Status')
+                Tables\Actions\Action::make('Ubah Status Sekdin')
                     ->form(fn ($record) =>[
                         Select::make('status')
                         ->reactive()
@@ -243,7 +246,7 @@ class ReimburseResource extends Resource
                                 ]);
                             }
                     })->hidden(fn ($record) => !Auth::user()->hasRole('Sekretaris Dinas') || optional($record->pengajuanreimburse)->status_keuangan !== 'Diterima Keuangan'),
-                    Tables\Actions\Action::make('Ubah Status')
+                Tables\Actions\Action::make('Ubah Status Kadin')
                     ->form(fn ($record) =>[
                         Select::make('status')
                         ->reactive()
