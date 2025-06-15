@@ -46,7 +46,7 @@ class BBMResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -67,7 +67,7 @@ class BBMResource extends Resource
         return [
             'index' => Pages\ListBBMS::route('/'),
             'create' => Pages\CreateBBM::route('/create'),
-            'edit' => Pages\EditBBM::route('/{record}/edit'),
+            // 'edit' => Pages\EditBBM::route('/{record}/edit'),
         ];
     }
 }

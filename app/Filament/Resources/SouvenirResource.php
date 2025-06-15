@@ -50,7 +50,7 @@ class SouvenirResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -71,7 +71,7 @@ class SouvenirResource extends Resource
         return [
             'index' => Pages\ListSouvenirs::route('/'),
             'create' => Pages\CreateSouvenir::route('/create'),
-            'edit' => Pages\EditSouvenir::route('/{record}/edit'),
+            // 'edit' => Pages\EditSouvenir::route('/{record}/edit'),
         ];
     }
 }
