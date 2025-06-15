@@ -41,7 +41,12 @@ class EditKehadiran extends EditRecord
 
         if (!$waktuMulaiStatus) {
             if (time() < $jadwalMulai - 3600) {
-                return; // Too early, do nothing
+                Notification::make()
+                    ->title('Belum bisa presensi karena masih belum waktunya!')
+                    ->danger()
+                    ->send();
+                $this->halt(); // stop save process
+                // return; // Too early, do nothing
             }        
     
             if ($isWithinArea) {
@@ -59,7 +64,12 @@ class EditKehadiran extends EditRecord
             }
         }else{
             if (time() < $jadwalSelesai) {
-                return; // Too early, do nothing
+                Notification::make()
+                    ->title('Belum bisa presensi karena masih belum waktunya!')
+                    ->danger()
+                    ->send();
+                $this->halt(); // stop save process
+                // return; // Too early, do nothing
             }        
     
             if ($isWithinArea) {
