@@ -24,7 +24,7 @@ use App\Models\Pengajuan;
 use App\Filament\Resources\SuratResource\Pages;
 use Dotswan\MapPicker\Fields\Map;
 use Torgodly\Html2Media\Tables\Actions\Html2MediaAction;
-
+use Illuminate\Support\Facades\Storage;
 
 class SuratResource extends Resource
 {
@@ -143,8 +143,8 @@ class SuratResource extends Resource
                     ->format('a4', 'mm') // A4 format with mm units
                     ->enableLinks() // Enable links in PDF
                     ->margin([10, 10, 10, 10]) // Set custom margins
-                    ->content(fn($record) => view('reusable.surat_masuk.surat_masuk', ['surat' => $record])),
-                    // ->hidden(fn($record) => $record->status_kadin !== 'Diterima Kadin')
+                    ->content(fn($record) => view('reusable.surat_masuk.surat_masuk', ['surat' => $record]))
+                    ->hidden(fn($record) => $record->pengajuan?->status_kadin !== 'Diterima Kadin'),
                 Tables\Actions\Action::make('Persetujuan Admin')
                     ->form(fn ($record) =>[
                         Select::make('status')
